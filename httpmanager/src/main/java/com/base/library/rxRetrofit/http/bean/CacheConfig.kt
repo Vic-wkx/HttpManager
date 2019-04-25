@@ -13,12 +13,6 @@ class CacheConfig {
     var cache = false
     // 有网的时候的缓存过期时间
     var onlineCacheTime = 30
-        get() {
-            return if (cache) field else 0
-        }
     // 没网的时候的缓存过期时间
     var offlineCacheTime = 60 * 60 * 24 * 30
-        get() {
-            return if (cache) field else 0
-        }
 }

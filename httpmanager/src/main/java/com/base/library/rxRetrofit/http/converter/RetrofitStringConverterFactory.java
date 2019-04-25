@@ -19,36 +19,33 @@ import java.lang.reflect.Type;
  * Description:
  * 大文本数据的转换
  *
- * @author  xuechao
+ * @author xuechao
  * Company: Mobile CPX
  * Date:    2019-04-25
  */
-public class RetrofitStringConverterFactory extends Converter.Factory{
+public class RetrofitStringConverterFactory extends Converter.Factory {
 
-    public static RetrofitStringConverterFactory create() {
-        return new RetrofitStringConverterFactory();
-    }
+    private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
+    private static final Feature[] EMPTY_SERIALIZER_FEATURES = new Feature[0];
+    private ParserConfig parserConfig = ParserConfig.getGlobalInstance();
+    private int featureValues = JSON.DEFAULT_PARSER_FEATURE;
+    private Feature[] features;
+    private SerializeConfig serializeConfig;
+    private SerializerFeature[] serializerFeatures;
 
     private RetrofitStringConverterFactory() {
 
     }
 
-    private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
-    private static final Feature[] EMPTY_SERIALIZER_FEATURES = new Feature[0];
-
-    private ParserConfig parserConfig = ParserConfig.getGlobalInstance();
-    private int featureValues = JSON.DEFAULT_PARSER_FEATURE;
-    private Feature[] features;
-
-    private SerializeConfig serializeConfig;
-    private SerializerFeature[] serializerFeatures;
-
+    public static RetrofitStringConverterFactory create() {
+        return new RetrofitStringConverterFactory();
+    }
 
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, //
                                                             Annotation[] annotations, //
                                                             Retrofit retrofit) {
-        if(String.class == type){
+        if (String.class == type) {
             return new StringConverter();
         }
         return new ResponseBodyConverter<ResponseBody>(type);
@@ -125,7 +122,7 @@ public class RetrofitStringConverterFactory extends Converter.Factory{
                                 ? features
                                 : EMPTY_SERIALIZER_FEATURES
                 );
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             } finally {
@@ -153,7 +150,7 @@ public class RetrofitStringConverterFactory extends Converter.Factory{
         }
     }
 
-    final class StringConverter implements Converter<ResponseBody,String> {
+    final class StringConverter implements Converter<ResponseBody, String> {
 
         @Override
         public String convert(ResponseBody value) throws IOException {

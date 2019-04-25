@@ -4,15 +4,14 @@ import android.content.Context
 import com.base.library.rxRetrofit.http.api.BaseApi
 import com.base.library.rxRetrofit.http.func.ResultFunc
 import com.base.library.rxRetrofit.http.func.RetryFunc
+import com.base.library.rxRetrofit.http.listener.HttpListListener
 import com.base.library.rxRetrofit.http.listener.HttpListener
+import com.base.library.rxRetrofit.http.observer.HttpListObserver
 import com.base.library.rxRetrofit.http.observer.HttpObserver
-import com.trello.rxlifecycle3.LifecycleTransformer
-import com.trello.rxlifecycle3.android.ActivityEvent
-import com.trello.rxlifecycle3.android.FragmentEvent
+import com.base.library.rxRetrofit.http.utils.bind
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle3.components.support.RxFragment
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Observable
 
 /**
  * Description:
@@ -28,14 +27,6 @@ class HttpManager {
     private var fragment: RxFragment? = null
     private val context: Context
         get() = activity ?: fragment?.context ?: throw Throwable("activity or fragment is null")
-    // RxLifeCycle生命周期
-    private val lifeCycle: LifecycleTransformer<String>
-        get() {
-            val fragmentLife = fragment?.bindUntilEvent<String>(FragmentEvent.DESTROY_VIEW)
-            val activityLife = activity?.bindUntilEvent<String>(ActivityEvent.DESTROY)
-            return fragmentLife ?: activityLife
-            ?: throw Throwable("activity or fragment is null")
-        }
 
     constructor(activity: RxAppCompatActivity) {
         this.activity = activity
@@ -47,17 +38,31 @@ class HttpManager {
 
     fun request(api: BaseApi, listener: HttpListener) {
         api.getObservable()
-            /*失败后retry处理控制*/
-            .retryWhen(RetryFunc(api.retry))
-            /*返回数据统一判断*/
-            .map(ResultFunc(api))
-            /*http请求线程*/
-            .subscribeOn(Schedulers.io())
-            .unsubscribeOn(Schedulers.io())
-            /*回调线程*/
-            .observeOn(AndroidSchedulers.mainThread())
-            /*绑定生命周期*/
-            .compose(lifeCycle)
-            .subscribe(HttpObserver(context, api, listener))
+                /*失败后retry处理控制*/
+                .retryWhen(RetryFunc(api.retry))
+                /*返回数据统一判断*/
+                .map(ResultFunc(api))
+                .bind(fragment, activity)
+                .subscribe(HttpObserver(context, api, listener))
+    }
+
+    fun request(apis: Array<BaseApi>, listener: HttpListListener) {
+        val resultMap = HashMap<BaseApi, Any>()
+        val errorMap = HashMap<BaseApi, Throwable>()
+        Observable.fromArray(*apis)
+                .flatMap { api ->
+                    api.getObservable()
+                            /*失败后retry处理控制*/
+                            .retryWhen(RetryFunc(api.retry))
+                            /*返回数据统一判断*/
+                            .map(ResultFunc(api))
+                            .map {
+                                resultMap[api] = listener.onSingleNext(api, it)
+                            }
+                            .bind(fragment, activity)
+                }
+                .buffer(apis.size)
+                .bind(fragment, activity)
+                .subscribe(HttpListObserver(resultMap, errorMap, listener))
     }
 }

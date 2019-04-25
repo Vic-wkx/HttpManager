@@ -43,20 +43,21 @@ abstract class BaseApi {
     val retrofit: Retrofit
         get() {
             //手动创建一个OkHttpClient并设置超时时间缓存等设置
-            val okHttpClient = OkHttpClient.Builder()
-                .addNetworkInterceptor(NetCacheInterceptor(cacheConfig.onlineCacheTime))
-                .addInterceptor(OfflineCacheInterceptor(cacheConfig.offlineCacheTime))
+            val builder = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
                     Log.d("RxRetrofit", "Retrofit~~~Message:$it")
                 }))
-                .cache(Cache(File(RxRetrofitApp.application?.externalCacheDir, "httpCache"), 1024 * 1024 * 50))
                 .connectTimeout(timeOutConfig.connectionTime, TimeUnit.SECONDS)
                 .readTimeout(timeOutConfig.readTime, TimeUnit.SECONDS)
                 .writeTimeout(timeOutConfig.writeTime, TimeUnit.SECONDS)
-                .build()
+            if (cacheConfig.cache) {
+                builder.addNetworkInterceptor(NetCacheInterceptor(cacheConfig.onlineCacheTime))
+                    .addInterceptor(OfflineCacheInterceptor(cacheConfig.offlineCacheTime))
+                    .cache(Cache(File(RxRetrofitApp.application?.externalCacheDir, "httpCache"), 1024 * 1024 * 50))
+            }
             /*创建retrofit对象*/
             return Retrofit.Builder()
-                .client(okHttpClient)
+                .client(builder.build())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(RetrofitStringConverterFactory.create())
                 .baseUrl(baseUrl)
