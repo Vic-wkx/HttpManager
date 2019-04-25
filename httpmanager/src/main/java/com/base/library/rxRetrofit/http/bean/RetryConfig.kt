@@ -8,11 +8,11 @@ package com.base.library.rxRetrofit.http.bean
  * Company: Mobile CPX
  * Date:    2019/4/3
  */
-class RetryConfig {
-    // 重试次数
-    var count = 5
-    // 重试延迟时间
-    var delay = 100L
-    // 每次增加延迟的时间
-    var increaseDelay = 100L
-}
+data class RetryConfig(
+        // 重试次数
+        var count: Int = 5,
+        // 重试延迟时间
+        var delay: Long = 100L,
+        // 每次增加延迟的时间
+        var increaseDelay: Long = 100L
+)

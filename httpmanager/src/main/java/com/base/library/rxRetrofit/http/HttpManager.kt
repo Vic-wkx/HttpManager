@@ -4,6 +4,7 @@ import android.content.Context
 import com.base.library.rxRetrofit.http.api.BaseApi
 import com.base.library.rxRetrofit.http.func.ResultFunc
 import com.base.library.rxRetrofit.http.func.RetryFunc
+import com.base.library.rxRetrofit.http.list.HttpListConfig
 import com.base.library.rxRetrofit.http.listener.HttpListListener
 import com.base.library.rxRetrofit.http.listener.HttpListener
 import com.base.library.rxRetrofit.http.observer.HttpListObserver
@@ -46,23 +47,32 @@ class HttpManager {
                 .subscribe(HttpObserver(context, api, listener))
     }
 
-    fun request(apis: Array<BaseApi>, listener: HttpListListener) {
+    fun request(apis: Array<BaseApi>, listener: HttpListListener, config: HttpListConfig = HttpListConfig()) {
         val resultMap = HashMap<BaseApi, Any>()
-        val errorMap = HashMap<BaseApi, Throwable>()
-        Observable.fromArray(*apis)
-                .flatMap { api ->
-                    api.getObservable()
-                            /*失败后retry处理控制*/
-                            .retryWhen(RetryFunc(api.retry))
-                            /*返回数据统一判断*/
-                            .map(ResultFunc(api))
-                            .map {
-                                resultMap[api] = listener.onSingleNext(api, it)
-                            }
-                            .bind(fragment, activity)
+        val observable = with(Observable.fromArray(*apis)) {
+            if (config.order)
+                this.concatMap {
+                    requestSingleApi(it, resultMap, listener)
                 }
-                .buffer(apis.size)
+            else
+                this.flatMap {
+                    requestSingleApi(it, resultMap, listener)
+                }
+        }
+        observable.buffer(apis.size)
                 .bind(fragment, activity)
-                .subscribe(HttpListObserver(resultMap, errorMap, listener))
+                .subscribe(HttpListObserver(context, resultMap, listener, config))
+    }
+
+    private fun requestSingleApi(api: BaseApi, resultMap: HashMap<BaseApi, Any>, listener: HttpListListener): Observable<Unit> {
+        return api.getObservable()
+                /*失败后retry处理控制*/
+                .retryWhen(RetryFunc(api.retry))
+                /*返回数据统一判断*/
+                .map(ResultFunc(api))
+                .map {
+                    resultMap[api] = listener.onSingleNext(api, it)
+                }
+                .bind(fragment, activity)
     }
 }

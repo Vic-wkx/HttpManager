@@ -17,8 +17,8 @@ class NetCacheInterceptor(private val onlineCacheTime: Int = 30) : Interceptor {
         val request = chain.request()
         val response = chain.proceed(request)
         return response.newBuilder()
-            .header("Cache-Control", "public, max-age=$onlineCacheTime")
-            .removeHeader("Pragma")
-            .build()
+                .header("Cache-Control", "public, max-age=$onlineCacheTime")
+                .removeHeader("Pragma")
+                .build()
     }
 }

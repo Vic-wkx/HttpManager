@@ -8,11 +8,11 @@ package com.base.library.rxRetrofit.http.bean
  * Company: Mobile CPX
  * Date:    2019-04-25
  */
-class CacheConfig {
-    // 是否需要缓存处理
-    var cache = false
-    // 有网的时候的缓存过期时间
-    var onlineCacheTime = 30
-    // 没网的时候的缓存过期时间
-    var offlineCacheTime = 60 * 60 * 24 * 30
-}
+data class CacheConfig(
+        // 是否需要缓存处理
+        var cache: Boolean = false,
+        // 有网的时候的缓存过期时间
+        var onlineCacheTime: Int = 30,
+        // 没网的时候的缓存过期时间
+        var offlineCacheTime: Int = 60 * 60 * 24 * 30
+)

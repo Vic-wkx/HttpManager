@@ -24,7 +24,7 @@ abstract class HttpListListener {
      * error：HttpList请求错误信息
      * errorMap：单个api请求错误信息，api -> 错误信息
      */
-    abstract fun onError(error: Throwable, errorMap: HashMap<BaseApi, Throwable>)
+    abstract fun onError(error: Throwable)
 
     /**
      * 收到了单个api的结果

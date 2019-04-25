@@ -18,8 +18,8 @@ class OfflineCacheInterceptor(var offlineCacheTime: Int = 60) : Interceptor {
         var request = chain.request()
         if (!NetworkUtils.isConnected()) {
             request = request.newBuilder()
-                .header("Cache-Control", "public, only-if-cached, max-stale=$offlineCacheTime")
-                .build()
+                    .header("Cache-Control", "public, only-if-cached, max-stale=$offlineCacheTime")
+                    .build()
         }
         return chain.proceed(request)
     }

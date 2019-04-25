@@ -16,7 +16,7 @@ import io.reactivex.disposables.Disposable
  * Date:    2019/4/23
  */
 class HttpObserver(private val context: Context, private val api: BaseApi, private val listener: HttpListener) :
-    Observer<String> {
+        Observer<String> {
 
     var loading: ProgressDialog? = null
     var disposable: Disposable? = null
@@ -44,12 +44,12 @@ class HttpObserver(private val context: Context, private val api: BaseApi, priva
     }
 
     override fun onError(e: Throwable) {
-        listener.onError(e)
         loading?.dismiss()
+        listener.onError(e)
     }
 
     override fun onComplete() {
-        listener.onComplete()
         loading?.dismiss()
+        listener.onComplete()
     }
 }

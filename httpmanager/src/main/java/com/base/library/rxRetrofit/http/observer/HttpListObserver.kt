@@ -1,6 +1,9 @@
 package com.base.library.rxRetrofit.http.observer
 
+import android.app.ProgressDialog
+import android.content.Context
 import com.base.library.rxRetrofit.http.api.BaseApi
+import com.base.library.rxRetrofit.http.list.HttpListConfig
 import com.base.library.rxRetrofit.http.listener.HttpListListener
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -14,28 +17,46 @@ import io.reactivex.disposables.Disposable
  * Date:    2019-04-25
  */
 class HttpListObserver(
-    private val resultMap: HashMap<BaseApi, Any>,
-    private val errorMap: HashMap<BaseApi, Throwable>,
-    private val listener: HttpListListener
+        private val context: Context,
+        private val resultMap: HashMap<BaseApi, Any>,
+        private val listener: HttpListListener,
+        private val config: HttpListConfig
 ) :
-    Observer<List<Unit>> {
-    override fun onComplete() {
-        listener.onComplete()
+        Observer<List<Unit>> {
+
+    var loading: ProgressDialog? = null
+    var disposable: Disposable? = null
+
+
+    override fun onSubscribe(d: Disposable) {
+        disposable = d
+        listener.onSubscribe(d)
+        showLoadingIfNeed()
     }
 
-    override fun onSubscribe(disposable: Disposable) {
-        listener.onSubscribe(disposable)
+    private fun showLoadingIfNeed() {
+        if (!config.showLoading) return
+        if (loading == null) {
+            loading = ProgressDialog.show(context, null, "Loading", false, config.loadingCancelable) {
+                disposable?.dispose()
+                listener.onError(Throwable("request cancel"))
+            }
+        } else {
+            loading?.show()
+        }
     }
 
     override fun onNext(ignore: List<Unit>) {
-        if (errorMap.isNotEmpty()) {
-            listener.onError(Throwable("One or more requests went wrong. See errorMap for details."), errorMap)
-            return
-        }
         listener.onNext(resultMap)
     }
 
     override fun onError(error: Throwable) {
-        listener.onError(error, errorMap)
+        loading?.dismiss()
+        listener.onError(error)
+    }
+
+    override fun onComplete() {
+        loading?.dismiss()
+        listener.onComplete()
     }
 }
