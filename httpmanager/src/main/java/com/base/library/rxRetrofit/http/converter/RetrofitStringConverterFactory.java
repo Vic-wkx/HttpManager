@@ -5,24 +5,24 @@ import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
-/**
- * 大文本数据的转换
- * @author xuechao
- * @date 2018/10/16 下午4:18
- * @copyright cpx
- */
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
+/**
+ * Description:
+ * 大文本数据的转换
+ *
+ * @author  xuechao
+ * Company: Mobile CPX
+ * Date:    2019-04-25
+ */
 public class RetrofitStringConverterFactory extends Converter.Factory{
 
     public static RetrofitStringConverterFactory create() {

@@ -3,8 +3,12 @@ package com.base.library.rxRetrofit
 import android.app.Application
 
 /**
- * 全局app
- * Created by WZG on 2016/12/12.
+ * Description:
+ * 全局application
+ *
+ * @author  WZG
+ * Company: Mobile CPX
+ * Date:    2019-04-25
  */
 object RxRetrofitApp {
     @JvmStatic

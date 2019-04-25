@@ -1,6 +1,6 @@
-package com.example.httpmanager
+package com.example.httpmanager.commen.api
 
-import com.base.library.rxRetrofit.api.BaseApi
+import com.base.library.rxRetrofit.http.api.BaseApi
 import io.reactivex.Observable
 
 /**
@@ -13,6 +13,9 @@ import io.reactivex.Observable
  */
 class DemoApi : BaseApi() {
 
+    init {
+        retry.count = 20
+    }
     override fun getObservable(): Observable<String> {
         val apiService = retrofit.create(DemoApiService::class.java)
         return apiService.getData()

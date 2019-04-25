@@ -1,24 +1,33 @@
 package com.base.library.rxRetrofit.http.func
 
-import com.base.library.rxRetrofit.common.bean.Retry
+import android.util.Log
+import com.base.library.rxRetrofit.http.bean.RetryConfig
 import io.reactivex.Observable
 import io.reactivex.functions.Function
 import java.util.concurrent.TimeUnit
 
 
 /**
- * retry条件
- * Created by WZG on 2016/10/17.
+ * Description:
+ * 重试逻辑
+ *
+ * @author  WZG
+ * Company: Mobile CPX
+ * Date:    2019-04-25
  */
-class RetryFunc(private val retry: Retry) : Function<Observable<Throwable>, Observable<Throwable>> {
-
+class RetryFunc(private val retry: RetryConfig) : Function<Observable<Throwable>, Observable<*>> {
     // 已经重试的次数
     private var count = 0
 
-    override fun apply(observable: Observable<Throwable>): Observable<Throwable> {
-        if (count > retry.count) {
-            return Observable.error(Exception("Retry finish, cannot get data"))
+    override fun apply(observable: Observable<Throwable>): Observable<*> {
+        return observable.flatMap {
+            if (++count > retry.count) {
+                Log.d("~~~", "Retry finish, cannot get data")
+                return@flatMap Observable.error<Throwable>(Throwable("Retry finish, cannot get data. Error is $it"))
+            }
+            Log.d("~~~", "RetryFunc get error:$it,current count:$count, total retry.count:${retry.count}")
+            return@flatMap Observable.timer(retry.delay + retry.increaseDelay * count, TimeUnit.MILLISECONDS)
         }
-        return observable.delay(retry.delay + retry.increaseDelay * count++, TimeUnit.MILLISECONDS)
     }
+
 }

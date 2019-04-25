@@ -1,0 +1,18 @@
+package com.base.library.rxRetrofit.http.bean
+
+/**
+ * Description:
+ * 超时时间配置
+ *
+ * @author  Alpinist Wang
+ * Company: Mobile CPX
+ * Date:    2019-04-25
+ */
+class TimeOutConfig {
+    // 连接超时时间
+    var connectionTime = 10L
+    // 读取超时时间
+    var readTime = 10L
+    // 写入超时时间
+    var writeTime = 10L
+}
