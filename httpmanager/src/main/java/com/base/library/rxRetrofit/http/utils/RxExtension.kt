@@ -17,25 +17,36 @@ import io.reactivex.Observable
  */
 
 /**
- * 将订阅与activity/fragment生命周期绑定
+ * 获取activity/fragment生命周期
  */
-fun <T> lifeCycle(fragment: RxFragment?, activity: RxAppCompatActivity?): LifecycleTransformer<T> {
+fun <T> lifeCycle(fragment: RxFragment?, activity: RxAppCompatActivity?): LifecycleTransformer<T>? {
     val fragmentLife = fragment?.bindUntilEvent<T>(FragmentEvent.DESTROY_VIEW)
     val activityLife = activity?.bindUntilEvent<T>(ActivityEvent.DESTROY)
     return fragmentLife ?: activityLife
-    ?: throw Throwable("activity or fragment is null")
 }
 
 /**
  * 设置订阅在io线程发生，在主线程观察，并绑定生命周期
  */
 fun <T> Observable<T>.bind(fragment: RxFragment?, activity: RxAppCompatActivity?): Observable<T> {
-    /*http请求线程*/
+    return bindIOToMainThread().bindLifeCycle(lifeCycle(fragment, activity))
+}
+
+/**
+ * 设置订阅在io线程发生，在主线程观察
+ */
+fun <T> Observable<T>.bindIOToMainThread(): Observable<T> {
     return subscribeOn(io.reactivex.schedulers.Schedulers.io())
             .unsubscribeOn(io.reactivex.schedulers.Schedulers.io())
-            /*回调线程*/
             .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-            /*绑定生命周期*/
-            .compose(lifeCycle(fragment, activity))
+}
+
+/**
+ * 绑定生命周期
+ */
+fun <T> Observable<T>.bindLifeCycle(lifeCycle: LifecycleTransformer<T>?): Observable<T> {
+    lifeCycle ?: return this
+    /*绑定生命周期*/
+    return compose(lifeCycle)
 }
 

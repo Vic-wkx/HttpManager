@@ -2,6 +2,7 @@ package com.base.library.rxRetrofit.http.observer
 
 import android.app.ProgressDialog
 import android.content.Context
+import com.base.library.rxRetrofit.RxRetrofitApp
 import com.base.library.rxRetrofit.http.api.BaseApi
 import com.base.library.rxRetrofit.http.listener.HttpListener
 import io.reactivex.Observer
@@ -28,7 +29,8 @@ class HttpObserver(private val context: Context, private val api: BaseApi, priva
     }
 
     private fun showLoadingIfNeed() {
-        if (!api.showLoading) return
+        // 如果使用的系统application的Context，不允许弹窗
+        if (!api.showLoading || context == RxRetrofitApp.application?.applicationContext) return
         if (loading == null) {
             loading = ProgressDialog.show(context, null, "Loading", false, api.loadingCancelable) {
                 disposable?.dispose()

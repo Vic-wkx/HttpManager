@@ -2,6 +2,7 @@ package com.base.library.rxRetrofit.http.observer
 
 import android.app.ProgressDialog
 import android.content.Context
+import com.base.library.rxRetrofit.RxRetrofitApp
 import com.base.library.rxRetrofit.http.api.BaseApi
 import com.base.library.rxRetrofit.http.list.HttpListConfig
 import com.base.library.rxRetrofit.http.listener.HttpListListener
@@ -17,12 +18,12 @@ import io.reactivex.disposables.Disposable
  * Date:    2019-04-25
  */
 class HttpListObserver(
-        private val context: Context,
-        private val resultMap: HashMap<BaseApi, Any>,
-        private val listener: HttpListListener,
-        private val config: HttpListConfig
+    private val context: Context,
+    private val resultMap: HashMap<BaseApi, Any>,
+    private val config: HttpListConfig,
+    private val listener: HttpListListener
 ) :
-        Observer<List<Unit>> {
+    Observer<List<Unit>> {
 
     var loading: ProgressDialog? = null
     var disposable: Disposable? = null
@@ -35,7 +36,7 @@ class HttpListObserver(
     }
 
     private fun showLoadingIfNeed() {
-        if (!config.showLoading) return
+        if (!config.showLoading || context == RxRetrofitApp.application?.applicationContext) return
         if (loading == null) {
             loading = ProgressDialog.show(context, null, "Loading", false, config.loadingCancelable) {
                 disposable?.dispose()

@@ -33,9 +33,11 @@ class MainActivity : RxAppCompatActivity() {
             httpManager.request(categoryApi, Listener())
         }
         btnRequestList.setOnClickListener {
-            httpManager.request(arrayOf(demoApi, categoryApi),
-                    ListListener(),
-                    HttpListConfig(showLoading = true, loadingCancelable = true, order = false))
+            httpManager.request(
+                arrayOf(demoApi, categoryApi),
+                HttpListConfig(showLoading = true, loadingCancelable = true, order = false),
+                ListListener()
+            )
         }
     }
 
