@@ -6,6 +6,8 @@ import com.trello.rxlifecycle3.android.FragmentEvent
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle3.components.support.RxFragment
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Description:
@@ -26,19 +28,12 @@ fun <T> lifeCycle(fragment: RxFragment?, activity: RxAppCompatActivity?): Lifecy
 }
 
 /**
- * 设置订阅在io线程发生，在主线程观察，并绑定生命周期
- */
-fun <T> Observable<T>.bind(fragment: RxFragment?, activity: RxAppCompatActivity?): Observable<T> {
-    return bindIOToMainThread().bindLifeCycle(lifeCycle(fragment, activity))
-}
-
-/**
  * 设置订阅在io线程发生，在主线程观察
  */
 fun <T> Observable<T>.bindIOToMainThread(): Observable<T> {
-    return subscribeOn(io.reactivex.schedulers.Schedulers.io())
-            .unsubscribeOn(io.reactivex.schedulers.Schedulers.io())
-            .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+    return subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 }
 
 /**

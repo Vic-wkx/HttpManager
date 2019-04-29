@@ -1,4 +1,4 @@
-package com.example.httpmanager.commen.api
+package com.base.library.rxRetrofit.api
 
 import com.base.library.rxRetrofit.http.api.BaseApi
 import io.reactivex.Observable
@@ -14,7 +14,7 @@ import io.reactivex.Observable
 class CategoryApi : BaseApi() {
 
     override fun getObservable(): Observable<String> {
-        val apiService = retrofit.create(WallpaperApiService::class.java)
+        val apiService = retrofit.create(TestApiService::class.java)
         return apiService.getCategory()
     }
 

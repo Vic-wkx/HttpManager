@@ -5,16 +5,16 @@ import io.reactivex.Observable
 
 /**
  * Description:
- * api 示例
+ * 不分类获取壁纸api
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX
  * Date:    2019/4/3
  */
-class DemoApi : BaseApi() {
+class RandomWallpaperApi : BaseApi() {
 
     override fun getObservable(): Observable<String> {
-        val apiService = retrofit.create(DemoApiService::class.java)
-        return apiService.getData()
+        val apiService = retrofit.create(WallpaperApiService::class.java)
+        return apiService.getRandomWallpaper()
     }
 }

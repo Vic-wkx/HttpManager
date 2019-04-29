@@ -10,7 +10,9 @@ import com.base.library.rxRetrofit.http.listener.HttpListListener
 import com.base.library.rxRetrofit.http.listener.HttpListener
 import com.base.library.rxRetrofit.http.observer.HttpListObserver
 import com.base.library.rxRetrofit.http.observer.HttpObserver
-import com.base.library.rxRetrofit.http.utils.bind
+import com.base.library.rxRetrofit.http.utils.bindIOToMainThread
+import com.base.library.rxRetrofit.http.utils.bindLifeCycle
+import com.base.library.rxRetrofit.http.utils.lifeCycle
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle3.components.support.RxFragment
 import io.reactivex.Observable
@@ -49,7 +51,8 @@ class HttpManager {
             .retryWhen(RetryFunc(api.retry))
             /*返回数据统一判断*/
             .map(ResultFunc(api))
-            .bind(fragment, activity)
+            .bindIOToMainThread()
+            .bindLifeCycle(lifeCycle(fragment, activity))
             .subscribe(HttpObserver(context, api, listener))
     }
 
@@ -66,7 +69,8 @@ class HttpManager {
                 }
         }
         observable.buffer(apis.size)
-            .bind(fragment, activity)
+            .bindIOToMainThread()
+            .bindLifeCycle(lifeCycle(fragment, activity))
             .subscribe(HttpListObserver(context, resultMap, config, listener))
     }
 
@@ -83,6 +87,7 @@ class HttpManager {
             .map {
                 resultMap[api] = listener.onSingleNext(api, it)
             }
-            .bind(fragment, activity)
+            .bindIOToMainThread()
+            .bindLifeCycle(lifeCycle(fragment, activity))
     }
 }
