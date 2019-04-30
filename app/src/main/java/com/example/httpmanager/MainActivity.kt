@@ -2,9 +2,11 @@ package com.example.httpmanager
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.base.library.rxRetrofit.http.HttpManager
 import com.base.library.rxRetrofit.http.api.BaseApi
 import com.base.library.rxRetrofit.http.down.DownConfig
+import com.base.library.rxRetrofit.http.down.DownloadProgress
 import com.base.library.rxRetrofit.http.down.HttpDownListener
 import com.base.library.rxRetrofit.http.down.HttpDownManager
 import com.base.library.rxRetrofit.http.list.HttpListConfig
@@ -29,7 +31,9 @@ class MainActivity : RxAppCompatActivity() {
     private val httpManager by lazy { HttpManager(this) }
     private val randomWallpaperApi by lazy { RandomWallpaperApi() }
     private val categoryApi by lazy { CategoryApi() }
-    private val downUrl = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+    private val config = DownConfig().apply {
+        url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+    }
     private val httpListener = object : HttpListener() {
 
         override fun onNext(result: String) {
@@ -73,32 +77,58 @@ class MainActivity : RxAppCompatActivity() {
     }
 
     private val httpDownListener = object : HttpDownListener() {
-        override fun onProgress(read: Long, total: Long) {
-            Log.d("~~~", "onProgress:$read / $total = ${read * 100 / total}")
+        override fun onProgress(downloadProgress: DownloadProgress) {
+            Log.d("~~~", "onProgress:$downloadProgress")
+            tvProgress.text = "下载中: ${downloadProgress.memoryProgress}"
+            progressBar.progress = downloadProgress.progress
         }
 
         override fun onComplete() {
             Log.d("~~~", "onComplete")
+            tvProgress.text = "下载完成"
+            showDownloadIcon()
         }
 
         override fun onError(e: Throwable) {
             Log.d("~~~", "onError:$e")
+            tvProgress.text = "下载出错，点击下载按钮继续下载"
+            showDownloadIcon()
         }
 
         override fun onSubscribe(d: Disposable) {
             super.onSubscribe(d)
             Log.d("~~~", "onSubscribe")
+            showPauseIcon()
         }
 
         override fun onPause() {
             super.onPause()
             Log.d("~~~", "onPause")
+            tvProgress.text = "下载暂停"
+            showDownloadIcon()
+        }
+
+        override fun onDelete() {
+            super.onDelete()
+            Log.d("~~~", "onDelete")
+            progressBar.progress = 0
+            tvProgress.text = "已删除"
+            showDownloadIcon()
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        initView()
+        HttpDownManager.bindListener(config, httpDownListener)
+        initDownState()
+    }
+
+    private fun initView() {
+        tvName.text = config.saveFileName
+        tvProgress.text = "尚未开始"
         btnRequest.setOnClickListener {
             httpManager.request(categoryApi, httpListener)
         }
@@ -109,17 +139,72 @@ class MainActivity : RxAppCompatActivity() {
                 httpListListener
             )
         }
-        btnDownload.setOnClickListener {
-            Log.d("~~~", "click")
-            val config = DownConfig().apply {
-                url = downUrl
+
+        ivDownload.setOnClickListener {
+            if (HttpDownManager.isDownloading(config)) {
+                HttpDownManager.pause(config)
+            } else {
+                if (HttpDownManager.isCompleted(config)) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "已经下载完成，如果需要重新下载，请先删除下载文件",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+                HttpDownManager.down(config)
             }
-            HttpDownManager.down(config, httpDownListener)
         }
 
-        btnPause.setOnClickListener {
-            HttpDownManager.pause(downUrl)
+        ivDelete.setOnClickListener {
+            HttpDownManager.delete(config)
         }
     }
 
+    /**
+     * 初始化下载任务的状态
+     */
+    private fun initDownState() {
+        when {
+            // 如果正在下载，无需设置tvProgress和progressBar，因为此页面绑定了监听器，收到进度回调时会改变其UI
+            HttpDownManager.isDownloading(config) -> {
+                Log.d("~~~", "isDownloading")
+                showPauseIcon()
+            }
+            // 显示已完成状态
+            HttpDownManager.isCompleted(config) -> {
+                tvProgress.text = "下载完成"
+                progressBar.progress = 100
+                showDownloadIcon()
+            }
+            // 显示暂停状态
+            HttpDownManager.isPause(config) -> {
+                val downloadProgress = HttpDownManager.getProgress(config)
+                tvProgress.text = "下载暂停: ${downloadProgress.memoryProgress}"
+                progressBar.progress = downloadProgress.progress
+                showDownloadIcon()
+            }
+            // 显示出错状态
+            HttpDownManager.isError(config) -> {
+                val downloadProgress = HttpDownManager.getProgress(config)
+                tvProgress.text = "下载出错，点击下载按钮继续下载: ${downloadProgress.memoryProgress}"
+                progressBar.progress = downloadProgress.progress
+                showDownloadIcon()
+            }
+        }
+    }
+
+    private fun showDownloadIcon() {
+        ivDownload.setImageResource(android.R.drawable.stat_sys_download)
+    }
+
+    private fun showPauseIcon() {
+        ivDownload.setImageResource(android.R.drawable.ic_media_pause)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 关闭页面时，解绑监听器，防止内存泄漏
+//        HttpDownManager.unbindListener(config)
+    }
 }

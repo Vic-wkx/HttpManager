@@ -1,9 +1,12 @@
 package com.base.library.rxRetrofit.http.utils
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.base.library.rxRetrofit.http.down.DownConfig
-import com.base.library.rxRetrofit.http.down.HttpDownListener
+import com.base.library.rxRetrofit.http.down.DownloadProgress
 import com.base.library.rxRetrofit.http.down.HttpDownManager
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.IOException
@@ -12,20 +15,19 @@ import java.io.RandomAccessFile
 
 /**
  * Description:
- *
+ * 文件下载工具类
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX
  * Date:    2019-04-28
  */
-object FileUtils {
+object FileDownloadUtils {
 
-    fun writeCache(
-        responseBody: ResponseBody,
-        config: DownConfig,
-        range: Long,
-        listener: HttpDownListener?
-    ) {
+    /**
+     * 将输入流写入文件
+     */
+    @SuppressLint("CheckResult")
+    fun writeCache(responseBody: ResponseBody, config: DownConfig, range: Long) {
         var randomAccessFile: RandomAccessFile? = null
         var inputStream: InputStream? = null
         try {
@@ -33,8 +35,10 @@ object FileUtils {
             if (!file.parentFile.exists()) file.parentFile.mkdirs()
             inputStream = responseBody.byteStream()
             randomAccessFile = RandomAccessFile(file, "rwd")
-            val totalLength = range + responseBody.contentLength()
-            randomAccessFile.setLength(totalLength)
+            val total = range + responseBody.contentLength()
+            DownRecordUtils.downloading(config.url)
+            DownRecordUtils.saveTotal(config.url, total)
+            randomAccessFile.setLength(total)
             randomAccessFile.seek(range)
             // 已读的字节数
             var read = range
@@ -43,20 +47,27 @@ object FileUtils {
             var len: Int
             while (true) {
                 len = inputStream.read(buffer)
-                if (len == -1 || !HttpDownManager.isDownloading(config.url)) break
+                if (len == -1 || !HttpDownManager.isDownloading(config)) break
                 randomAccessFile.write(buffer, 0, len)
-
                 read += len
                 // 实时保存下载进度到SP中
-                SPUtils.getInstance().put(config.url, read, true)
-                if (!HttpDownManager.isDownloading(config.url)) {
-                    Log.e("~~~", "isDownloading = false")
-                    break
-                }
-                listener?.onProgress(read, totalLength)
+                DownRecordUtils.saveRead(config.url, read)
+
+                val downloadProgress = DownloadProgress(read, total)
+                Observable.just(downloadProgress)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (!HttpDownManager.isDownloading(config)) {
+                            Log.e("~~~", "isDownloading = false")
+                            return@subscribe
+                        }
+                        HttpDownManager.getListener(config)
+                            ?.onProgress(it)
+                    }
+
             }
         } catch (e: IOException) {
-            if (!HttpDownManager.isDownloading(config.url)) {
+            if (!HttpDownManager.isDownloading(config)) {
                 Log.e("~~~", "write to file Exception:$e")
                 return
             }

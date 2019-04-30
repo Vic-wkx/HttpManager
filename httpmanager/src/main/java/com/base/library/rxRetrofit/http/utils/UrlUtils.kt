@@ -2,7 +2,7 @@ package com.base.library.rxRetrofit.http.utils
 
 /**
  * Description:
- *
+ * Url工具类
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX
@@ -10,6 +10,9 @@ package com.base.library.rxRetrofit.http.utils
  */
 object UrlUtils {
 
+    /**
+     * 从url分割出BaseUrl
+     */
     fun getBaseUrl(url: String): String {
         var mutableUrl = url
         var head = ""

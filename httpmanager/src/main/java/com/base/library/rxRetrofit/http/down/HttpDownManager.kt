@@ -1,11 +1,11 @@
 package com.base.library.rxRetrofit.http.down
 
+import android.annotation.SuppressLint
 import com.base.library.rxRetrofit.http.converter.RetrofitStringConverterFactory
 import com.base.library.rxRetrofit.http.func.RetryFunc
-import com.base.library.rxRetrofit.http.utils.FileUtils
-import com.base.library.rxRetrofit.http.utils.SPUtils
-import com.base.library.rxRetrofit.http.utils.UrlUtils
-import com.base.library.rxRetrofit.http.utils.bindIOToMainThread
+import com.base.library.rxRetrofit.http.utils.*
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -18,62 +18,103 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
  * Company: Mobile CPX
  * Date:    2019-04-26
  */
+@SuppressLint("CheckResult")
 object HttpDownManager {
 
-    private val listeners = HashMap<String, HttpDownListener>()
-    private val downloadingDisposables = HashMap<String, Disposable>()
+    // 下载监听器列表
+    private val listeners = HashMap<DownConfig, HttpDownListener>()
+    // 下载任务列表
+    private val downloadingDisposables = HashMap<DownConfig, Disposable>()
 
-    fun down(config: DownConfig, listener: HttpDownListener) {
-        val url = config.url
-        if (url.isEmpty()) throw Throwable("download url is empty")
+    fun down(config: DownConfig) {
+        if (config.url.isEmpty()) throw Throwable("download url is empty")
         // 防止多次下载同一个文件
-        if (listeners.containsKey(url)) return
-        listeners[url] = listener
+        if (isDownloading(config)) return
         // 创建retrofit对象
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(RetrofitStringConverterFactory.create())
-            .baseUrl(UrlUtils.getBaseUrl(url))
+            .baseUrl(UrlUtils.getBaseUrl(config.url))
             .build()
         // 查询记录的下载进度
-        val range = SPUtils.getInstance().getLong(url, 0L)
+        val range = DownRecordUtils.getRange(config.url)
         val disposable = retrofit.create(HttpDownService::class.java)
-            .download("bytes=$range-", url)
-            .doOnSubscribe {
-                // 在map中执行的写入文件操作，所以需要在map之前回调onSubscribe，标志下载开始
-                listeners[url]?.onSubscribe(it)
-            }
+            .download("bytes=$range-", config.url)
             .retryWhen(RetryFunc(config.retry))
             .map {
-                FileUtils.writeCache(it, config, range, listeners[url])
+                FileDownloadUtils.writeCache(it, config, range)
             }
             .bindIOToMainThread()
             .subscribe({
-
+                DownRecordUtils.complete(config.url)
             }, {
-                listeners[url]?.onError(it)
-                release(url)
+                listeners[config]?.onError(it)
+                DownRecordUtils.error(config.url)
             }, {
-                SPUtils.getInstance().remove(url)
-                listeners[url]?.onComplete()
-                release(url)
-            }, {})
-        downloadingDisposables[url] = disposable
+                listeners[config]?.onComplete()
+            }, {
+                listeners[config]?.onSubscribe(it)
+            })
+        downloadingDisposables[config] = disposable
     }
 
-    fun pause(url: String) {
-        if (downloadingDisposables[url]?.isDisposed == true) return
-        downloadingDisposables[url]?.dispose()
-        listeners[url]?.onPause()
-        release(url)
+    fun pause(config: DownConfig) {
+        if (!isDownloading(config)) return
+        downloadingDisposables[config]?.dispose()
+        listeners[config]?.onPause()
+        DownRecordUtils.pause(config.url)
     }
 
-    private fun release(url: String) {
-        downloadingDisposables.remove(url)
-        listeners.remove(url)
+    fun delete(
+        config: DownConfig
+    ) {
+        Observable.just(config)
+            .map {
+                downloadingDisposables[it]?.dispose()
+                FileUtils.delete(it.savePath)
+                DownRecordUtils.delete(it.url)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                listeners[config]?.onDelete()
+            }, {
+                listeners[config]?.onError(it)
+            })
     }
 
-    fun isDownloading(url: String): Boolean {
-        return downloadingDisposables[url] != null && downloadingDisposables[url]?.isDisposed == false
+    fun isDownloading(config: DownConfig): Boolean {
+        return downloadingDisposables[config] != null
+                && downloadingDisposables[config]?.isDisposed == false
+                && DownRecordUtils.isDownloading(config)
     }
+
+    fun getListener(config: DownConfig): HttpDownListener? {
+        return listeners[config]
+    }
+
+    fun bindListener(config: DownConfig, listener: HttpDownListener) {
+        if (config.url.isEmpty()) throw Throwable("download url is empty")
+        listeners[config] = listener
+    }
+
+    fun unbindListener(config: DownConfig) {
+        listeners.remove(config)
+    }
+
+    fun isCompleted(config: DownConfig): Boolean {
+        return DownRecordUtils.isCompleted(config)
+    }
+
+    fun isPause(config: DownConfig): Boolean {
+        return DownRecordUtils.isPause(config)
+    }
+
+    fun isError(config: DownConfig): Boolean {
+        return DownRecordUtils.isError(config)
+    }
+
+    fun getProgress(config: DownConfig): DownloadProgress {
+        return DownRecordUtils.getProgress(config)
+    }
+
 }

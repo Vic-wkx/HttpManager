@@ -20,28 +20,56 @@
         android:text="多个网络请求"
         app:layout_constraintTop_toBottomOf="@id/btnRequest" />
 
-    <Button
-        android:id="@+id/btnDownload"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="下载"
-        app:layout_constraintTop_toBottomOf="@id/btnRequestList" />
+        app:layout_constraintBottom_toTopOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="@id/progressBar"
+        app:layout_constraintStart_toStartOf="@id/progressBar"
+        tools:text="测试下载的Mp4文件" />
 
-    <Button
-        android:id="@+id/btnPause"
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="暂停下载"
-        app:layout_constraintTop_toBottomOf="@id/btnDownload" />
+        android:layout_margin="6dp"
+        app:layout_constraintBottom_toBottomOf="@id/ivDownload"
+        app:layout_constraintEnd_toStartOf="@id/ivDownload"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivDownload"
+        tools:progress="50" />
 
     <TextView
-        android:id="@+id/tv"
+        android:id="@+id/tvProgress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/progressBar"
+        app:layout_constraintStart_toStartOf="@id/progressBar"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        tools:text="3.3M / 6.6M" />
+
+    <ImageView
+        android:id="@+id/ivDownload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="6dp"
+        android:src="@android:drawable/stat_sys_download"
+        android:tint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/ivDelete"
+        app:layout_constraintEnd_toStartOf="@id/ivDelete"
+        app:layout_constraintTop_toTopOf="@id/ivDelete" />
+
+    <ImageView
+        android:id="@+id/ivDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="6dp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:tint="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toBottomOf="@id/btnRequestList" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

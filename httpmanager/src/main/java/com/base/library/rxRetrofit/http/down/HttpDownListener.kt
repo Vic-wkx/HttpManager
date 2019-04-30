@@ -4,7 +4,7 @@ import io.reactivex.disposables.Disposable
 
 /**
  * Description:
- *
+ * 下载监听器
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX
@@ -12,7 +12,7 @@ import io.reactivex.disposables.Disposable
  */
 abstract class HttpDownListener {
 
-    abstract fun onProgress(read: Long, total: Long)
+    abstract fun onProgress(downloadProgress: DownloadProgress)
 
     abstract fun onComplete()
 
@@ -21,4 +21,6 @@ abstract class HttpDownListener {
     open fun onSubscribe(d: Disposable) {}
 
     open fun onPause() {}
+
+    open fun onDelete() {}
 }

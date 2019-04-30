@@ -4,7 +4,7 @@
 
 ## 描述
 
-这是一个封装了Http网络请求、HTTP多接口合并、网络文件下载的库。改编自[wzgiceman](https://github.com/wzgiceman)的[RxRetrofit库](https://github.com/wzgiceman/RxjavaRetrofitDemo-master)
+这是一个封装了Http网络请求、HTTP多接口合并、网络文件下载的库。改编自[wzgiceman](https://github.com/wzgiceman)的[RxRetrofit库](https://github.com/wzgiceman/RxjavaRetrofitDemo-string-master)
 
 ## Bug 反馈
 

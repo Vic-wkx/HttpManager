@@ -30,4 +30,15 @@ class DownConfig {
     val savePath: String
         get() = saveDir + saveFileName
     var retry = RetryConfig()
+
+    override fun hashCode(): Int {
+        return url.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is DownConfig) return false
+        // 只要url相等，就判定为同一个DownConfig
+        if (other.url == this.url) return true
+        return false
+    }
 }

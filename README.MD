@@ -4,7 +4,7 @@
 
 ## Description
 
-This is a library that encapsulates Http network requests, HTTP multi-interface merges, and network file downloads. Adapted from [wzgiceman](https://github.com/wzgiceman)'s [RxRetrofit library](https://github.com/wzgiceman/RxjavaRetrofitDemo-master)
+This is a library that encapsulates Http network requests, HTTP multi-interface merges, and network file downloads. Adapted from [wzgiceman](https://github.com/wzgiceman)'s [RxRetrofit library](https://github.com/wzgiceman/RxjavaRetrofitDemo-string-master)
 
 ## Bug Feedback
 
