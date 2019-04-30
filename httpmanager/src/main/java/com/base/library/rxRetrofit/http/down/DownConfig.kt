@@ -14,6 +14,11 @@ import com.base.library.rxRetrofit.http.bean.RetryConfig
  */
 class DownConfig {
 
+    companion object {
+        // 下载进度更新频率，此值表示按照进度的百分之一更新
+        const val PROGRESS_BY_PERCENT = -1
+    }
+
     var url: String = ""
     var saveDir: String = ""
         get() {
@@ -29,6 +34,9 @@ class DownConfig {
         }
     val savePath: String
         get() = saveDir + saveFileName
+    /**下载进度更新频率，下载多少B之后更新一次，默认4K。使用[PROGRESS_BY_PERCENT]表示按百分比更新*/
+    var progressStep = 1024 * 4
+
     var retry = RetryConfig()
 
     override fun hashCode(): Int {

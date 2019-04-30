@@ -21,6 +21,6 @@ class DownloadProgress(var read: Long, var total: Long) {
         get() = "${ConvertUtils.byte2FitMemorySize(read)} / ${ConvertUtils.byte2FitMemorySize(total)}"
 
     override fun toString(): String {
-        return "$read / $total = $progress"
+        return "$read / $total = $memoryProgress, progress = $progress%"
     }
 }

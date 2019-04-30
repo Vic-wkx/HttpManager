@@ -14,5 +14,5 @@ data class RetryConfig(
         // 重试延迟时间
         var delay: Long = 100L,
         // 每次增加延迟的时间
-        var increaseDelay: Long = 100L
+        var increaseDelay: Long = 500L
 )

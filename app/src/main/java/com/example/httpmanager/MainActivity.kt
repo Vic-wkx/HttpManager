@@ -32,7 +32,11 @@ class MainActivity : RxAppCompatActivity() {
     private val randomWallpaperApi by lazy { RandomWallpaperApi() }
     private val categoryApi by lazy { CategoryApi() }
     private val config = DownConfig().apply {
-        url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+//        url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+        url = "http://dldir1.qq.com/qqmi/aphone_p2p/TencentVideo_V6.0.0.14297_848.apk"
+        /**进度更新频率，下载多少Byte后更新一次进度。默认每下载4KB更新一次，这里设置为每512KB更新一次。
+         * 使用[DownConfig.PROGRESS_BY_PERCENT]表示每下载百分之一更新一次*/
+        progressStep = 1024 * 512
     }
     private val httpListener = object : HttpListener() {
 
@@ -51,6 +55,7 @@ class MainActivity : RxAppCompatActivity() {
             when (api) {
                 randomWallpaperApi -> {
                     Log.d("~~~", "randomWallpaperApi:$result")
+                    // 这里可以将返回的字符串转换为任意对象
                     return 123
                 }
                 categoryApi -> Log.d("~~~", "categoryApi:$result")
@@ -63,6 +68,7 @@ class MainActivity : RxAppCompatActivity() {
             if (resultMap.containsKey(randomWallpaperApi) && resultMap.containsKey(categoryApi)) {
                 Log.d(
                     "~~~",
+                    // 通过 as 方法，将resultMap中保存的对象取出并转换成onSingleNext返回的类型
                     "${resultMap[randomWallpaperApi] as Int}\n${resultMap[categoryApi].toString()}"
                 )
             } else {
@@ -86,6 +92,9 @@ class MainActivity : RxAppCompatActivity() {
         override fun onComplete() {
             Log.d("~~~", "onComplete")
             tvProgress.text = "下载完成"
+            // 有可能下完时没有达到更新进度要求progressStep，会导致进度条没有走到100%，所以手动设置到100%。
+            // 当然也可以在HttpDownManager回调onComplete之前回调一次onProgress(100)，但是笔者为了保持库的简洁所以没这么做
+            progressBar.progress = 100
             showDownloadIcon()
         }
 
@@ -97,7 +106,7 @@ class MainActivity : RxAppCompatActivity() {
 
         override fun onSubscribe(d: Disposable) {
             super.onSubscribe(d)
-            Log.d("~~~", "onSubscribe")
+            Log.d("~~~", "onSubscribe：开始下载或继续下载")
             showPauseIcon()
         }
 
@@ -111,8 +120,8 @@ class MainActivity : RxAppCompatActivity() {
         override fun onDelete() {
             super.onDelete()
             Log.d("~~~", "onDelete")
-            progressBar.progress = 0
             tvProgress.text = "已删除"
+            progressBar.progress = 0
             showDownloadIcon()
         }
     }
@@ -166,9 +175,12 @@ class MainActivity : RxAppCompatActivity() {
      */
     private fun initDownState() {
         when {
-            // 如果正在下载，无需设置tvProgress和progressBar，因为此页面绑定了监听器，收到进度回调时会改变其UI
+            // 显示正在下载状态
             HttpDownManager.isDownloading(config) -> {
                 Log.d("~~~", "isDownloading")
+                val downloadProgress = HttpDownManager.getProgress(config)
+                tvProgress.text = "下载中: ${downloadProgress.memoryProgress}"
+                progressBar.progress = downloadProgress.progress
                 showPauseIcon()
             }
             // 显示已完成状态

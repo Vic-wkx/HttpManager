@@ -42,6 +42,7 @@ object FileDownloadUtils {
             randomAccessFile.seek(range)
             // 已读的字节数
             var read = range
+            var lastDownloadProgress = DownloadProgress(read, total)
             val buffer = ByteArray(1024 * 4)
             // 每次读的大小并不是buffer的大小，所以需要将read的结果保存起来，加到read里面
             var len: Int
@@ -50,10 +51,15 @@ object FileDownloadUtils {
                 if (len == -1 || !HttpDownManager.isDownloading(config)) break
                 randomAccessFile.write(buffer, 0, len)
                 read += len
-                // 实时保存下载进度到SP中
+                // 实时保存下载进度
                 DownRecordUtils.saveRead(config.url, read)
-
                 val downloadProgress = DownloadProgress(read, total)
+                if (notEnoughUpdateProgress(
+                        config,
+                        downloadProgress,
+                        lastDownloadProgress
+                    )
+                ) continue
                 Observable.just(downloadProgress)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
@@ -64,7 +70,7 @@ object FileDownloadUtils {
                         HttpDownManager.getListener(config)
                             ?.onProgress(it)
                     }
-
+                lastDownloadProgress = downloadProgress
             }
         } catch (e: IOException) {
             if (!HttpDownManager.isDownloading(config)) {
@@ -80,5 +86,25 @@ object FileDownloadUtils {
                 throw Throwable("close stream Exception in write to file:$e")
             }
         }
+    }
+
+    /**
+     * 是否不足以更新进度
+     */
+    private fun notEnoughUpdateProgress(
+        config: DownConfig,
+        downloadProgress: DownloadProgress,
+        lastDownloadProgress: DownloadProgress
+    ): Boolean {
+        if (config.progressStep == DownConfig.PROGRESS_BY_PERCENT) {
+            // 如果是按照百分比更新进度，当前progress<=之前的progress，表示不足以更新进度，返回true
+            if (downloadProgress.progress <= lastDownloadProgress.progress)
+                return true
+        } else {
+            // 如果不是按照百分比更新进度，当前read的byte数-之前的read的byte数<progressStep，表示不足以更新进度，返回true
+            if (downloadProgress.read - lastDownloadProgress.read < config.progressStep)
+                return true
+        }
+        return false
     }
 }
