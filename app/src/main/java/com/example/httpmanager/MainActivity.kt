@@ -205,6 +205,6 @@ class MainActivity : RxAppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // 关闭页面时，解绑监听器，防止内存泄漏
-//        HttpDownManager.unbindListener(config)
+        HttpDownManager.unbindListener(config)
     }
 }
