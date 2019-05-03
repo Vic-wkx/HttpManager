@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
 import com.base.library.rxRetrofit.RxRetrofitApp
+import com.example.httpmanager.commen.httpConfig.ApiConfig
+import com.example.httpmanager.commen.httpConfig.ResultFunc
 
 /**
  * Description:
@@ -16,7 +18,7 @@ import com.base.library.rxRetrofit.RxRetrofitApp
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        RxRetrofitApp.init(this)
+        RxRetrofitApp.init(this, ResultFunc(), ApiConfig())
     }
 
     override fun attachBaseContext(base: Context?) {

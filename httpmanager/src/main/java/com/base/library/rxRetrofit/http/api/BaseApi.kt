@@ -2,9 +2,6 @@ package com.base.library.rxRetrofit.http.api
 
 import android.util.Log
 import com.base.library.rxRetrofit.RxRetrofitApp
-import com.base.library.rxRetrofit.http.bean.CacheConfig
-import com.base.library.rxRetrofit.http.bean.RetryConfig
-import com.base.library.rxRetrofit.http.bean.TimeOutConfig
 import com.base.library.rxRetrofit.http.converter.RetrofitStringConverterFactory
 import com.base.library.rxRetrofit.http.interceptor.HttpLoggingInterceptor
 import com.base.library.rxRetrofit.http.interceptor.NetCacheInterceptor
@@ -26,43 +23,51 @@ import java.util.concurrent.TimeUnit
  * Date:    2019-04-25
  */
 abstract class BaseApi {
-    var baseUrl = "http://service.picasso.adesk.com/"
+    // Retrofit网络请求的BaseUrl
+    var baseUrl = RxRetrofitApp.apiConfig.baseUrl
     // 是否显示Loading弹窗
-    var showLoading = true
+    var showLoading = RxRetrofitApp.apiConfig.showLoading
     // Loading弹窗是否可取消
-    var loadingCancelable = true
+    var loadingCancelable = RxRetrofitApp.apiConfig.loadingCancelable
     // 缓存配置
-    var cacheConfig = CacheConfig()
+    var cacheConfig = RxRetrofitApp.apiConfig.cacheConfig
     // 是否忽略BaseResult判断
-    var ignoreJudge: Boolean = false
+    var ignoreJudge = RxRetrofitApp.apiConfig.ignoreJudge
     // 重试配置
-    var retry = RetryConfig()
+    var retry = RxRetrofitApp.apiConfig.retry
     // 超时时间配置
-    var timeOutConfig = TimeOutConfig()
+    var timeOutConfig = RxRetrofitApp.apiConfig.timeOutConfig
 
     val retrofit: Retrofit
         get() {
             //手动创建一个OkHttpClient并设置超时时间缓存等设置
             val builder = OkHttpClient.Builder()
-                    .addInterceptor(HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
-                        Log.d("RxRetrofit", "Retrofit~~~Message:$it")
-                    }))
-                    .connectTimeout(timeOutConfig.connectionTime, TimeUnit.SECONDS)
-                    .readTimeout(timeOutConfig.readTime, TimeUnit.SECONDS)
-                    .writeTimeout(timeOutConfig.writeTime, TimeUnit.SECONDS)
+                .addInterceptor(HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
+                    Log.d("RxRetrofit", "Retrofit~~~Message:$it")
+                }))
+                .connectTimeout(timeOutConfig.connectionTime, TimeUnit.SECONDS)
+                .readTimeout(timeOutConfig.readTime, TimeUnit.SECONDS)
+                .writeTimeout(timeOutConfig.writeTime, TimeUnit.SECONDS)
             if (cacheConfig.cache) {
                 builder.addNetworkInterceptor(NetCacheInterceptor(cacheConfig.onlineCacheTime))
-                        .addInterceptor(OfflineCacheInterceptor(cacheConfig.offlineCacheTime))
-                        .cache(Cache(File(RxRetrofitApp.application?.externalCacheDir, "httpCache"), 1024 * 1024 * 50))
+                    .addInterceptor(OfflineCacheInterceptor(cacheConfig.offlineCacheTime))
+                    .cache(
+                        Cache(
+                            File(RxRetrofitApp.application?.externalCacheDir, "httpCache"),
+                            1024 * 1024 * 50
+                        )
+                    )
             }
             /*创建retrofit对象*/
             return Retrofit.Builder()
-                    .client(builder.build())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(RetrofitStringConverterFactory.create())
-                    .baseUrl(baseUrl)
-                    .build()
+                .client(builder.build())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(RetrofitStringConverterFactory.create())
+                .baseUrl(baseUrl)
+                .build()
         }
 
     abstract fun getObservable(): Observable<String>
+
+
 }

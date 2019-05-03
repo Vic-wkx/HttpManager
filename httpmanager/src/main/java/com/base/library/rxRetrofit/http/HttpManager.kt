@@ -3,7 +3,7 @@ package com.base.library.rxRetrofit.http
 import android.content.Context
 import com.base.library.rxRetrofit.RxRetrofitApp
 import com.base.library.rxRetrofit.http.api.BaseApi
-import com.base.library.rxRetrofit.http.func.ResultFunc
+import com.base.library.rxRetrofit.http.func.HttpResultFunc
 import com.base.library.rxRetrofit.http.func.RetryFunc
 import com.base.library.rxRetrofit.http.list.HttpListConfig
 import com.base.library.rxRetrofit.http.listener.HttpListListener
@@ -50,7 +50,7 @@ class HttpManager {
             /*失败后retry处理控制*/
             .retryWhen(RetryFunc(api.retry))
             /*返回数据统一判断*/
-            .map(ResultFunc(api))
+            .map(HttpResultFunc(api))
             .bindIOToMainThread()
             .bindLifeCycle(lifeCycle(fragment, activity))
             .subscribe(HttpObserver(context, api, listener))
@@ -83,7 +83,7 @@ class HttpManager {
             /*失败后retry处理控制*/
             .retryWhen(RetryFunc(api.retry))
             /*返回数据统一判断*/
-            .map(ResultFunc(api))
+            .map(HttpResultFunc(api))
             .map {
                 resultMap[api] = listener.onSingleNext(api, it)
             }

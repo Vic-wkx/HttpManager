@@ -1,12 +1,12 @@
-package com.base.library.rxRetrofit.http.bean
+package com.example.httpmanager.commen.bean
 
 /**
  * Description:
  * Http返回数据基类
  *
- * @author  WZG
+ * @author  Alpinist Wang
  * Company: Mobile CPX
- * Date:    2019-04-25
+ * Date:    2019-05-04
  */
 class BaseResult {
     // 此变量为0表示请求成功

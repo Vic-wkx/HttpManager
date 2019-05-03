@@ -55,11 +55,10 @@ class MainActivity : RxAppCompatActivity() {
             when (api) {
                 randomWallpaperApi -> {
                     Log.d("~~~", "randomWallpaperApi:$result")
-                    // 这里可以将返回的字符串转换为任意对象
+                    // 这里可以将返回的字符串转换为任意对象，一般在这里使用Gson/fastJson解析对象
                     return 123
                 }
                 categoryApi -> Log.d("~~~", "categoryApi:$result")
-                else -> Log.d("~~~", "unknown:$result")
             }
             return super.onSingleNext(api, result)
         }
@@ -136,8 +135,6 @@ class MainActivity : RxAppCompatActivity() {
     }
 
     private fun initView() {
-        tvName.text = config.saveFileName
-        tvProgress.text = "尚未开始"
         btnRequest.setOnClickListener {
             httpManager.request(categoryApi, httpListener)
         }
@@ -148,7 +145,8 @@ class MainActivity : RxAppCompatActivity() {
                 httpListListener
             )
         }
-
+        tvName.text = config.saveFileName
+        tvProgress.text = "尚未开始"
         ivDownload.setOnClickListener {
             if (HttpDownManager.isDownloading(config)) {
                 HttpDownManager.pause(config)
@@ -164,7 +162,6 @@ class MainActivity : RxAppCompatActivity() {
                 HttpDownManager.down(config)
             }
         }
-
         ivDelete.setOnClickListener {
             HttpDownManager.delete(config)
         }
