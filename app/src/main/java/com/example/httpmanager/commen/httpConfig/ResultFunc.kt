@@ -1,7 +1,7 @@
 package com.example.httpmanager.commen.httpConfig
 
 import com.alibaba.fastjson.JSONObject
-import com.base.library.rxRetrofit.http.listener.IResultFunc
+import com.base.library.rxRetrofit.http.config.IResultFunc
 import com.example.httpmanager.commen.bean.BaseResult
 
 /**

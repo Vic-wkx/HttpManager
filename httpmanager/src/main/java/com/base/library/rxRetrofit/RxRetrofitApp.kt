@@ -1,9 +1,7 @@
 package com.base.library.rxRetrofit
 
 import android.app.Application
-import com.base.library.rxRetrofit.http.bean.BaseApiConfig
-import com.base.library.rxRetrofit.http.bean.DefaultResultFunc
-import com.base.library.rxRetrofit.http.listener.IResultFunc
+import com.base.library.rxRetrofit.http.config.*
 
 /**
  * Description:
@@ -26,20 +24,27 @@ object RxRetrofitApp {
     @JvmStatic
     lateinit var apiConfig: BaseApiConfig
         private set
+    /**Http响应统一处理*/
+    @JvmStatic
+    lateinit var httpResponseFunc: IHttpResponseFunc
+        private set
 
     /**
      * 初始化RxRetrofit库
      * @param application 全局Application
      * @param resultFunc 返回数据统一处理
      * @param apiConfig 全局修改BaseApi配置
+     * @param httpResponseFunc Http响应统一处理
      */
     fun init(
         application: Application,
         resultFunc: IResultFunc = DefaultResultFunc(),
-        apiConfig: BaseApiConfig = BaseApiConfig()
+        apiConfig: BaseApiConfig = BaseApiConfig(),
+        httpResponseFunc: IHttpResponseFunc = DefaultHttpResponseFunc()
     ) {
         this.application = application
         this.resultFunc = resultFunc
         this.apiConfig = apiConfig
+        this.httpResponseFunc = httpResponseFunc
     }
 }

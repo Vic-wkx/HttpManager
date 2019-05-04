@@ -1,6 +1,4 @@
-package com.base.library.rxRetrofit.http.bean
-
-import com.base.library.rxRetrofit.http.listener.IResultFunc
+package com.base.library.rxRetrofit.http.config
 
 /**
  * Description:

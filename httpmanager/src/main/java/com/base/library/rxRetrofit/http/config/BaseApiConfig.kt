@@ -1,4 +1,4 @@
-package com.base.library.rxRetrofit.http.bean
+package com.base.library.rxRetrofit.http.config
 
 import okhttp3.Headers
 

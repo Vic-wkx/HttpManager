@@ -2,7 +2,7 @@ package com.base.library.rxRetrofit.http.down
 
 import android.net.Uri
 import com.base.library.rxRetrofit.RxRetrofitApp
-import com.base.library.rxRetrofit.http.bean.RetryConfig
+import com.base.library.rxRetrofit.http.config.RetryConfig
 
 /**
  * Description:

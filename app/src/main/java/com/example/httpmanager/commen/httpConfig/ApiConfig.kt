@@ -1,6 +1,6 @@
 package com.example.httpmanager.commen.httpConfig
 
-import com.base.library.rxRetrofit.http.bean.BaseApiConfig
+import com.base.library.rxRetrofit.http.config.BaseApiConfig
 
 /**
  * Description:

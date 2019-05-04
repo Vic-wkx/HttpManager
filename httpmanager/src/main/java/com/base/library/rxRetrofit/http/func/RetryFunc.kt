@@ -1,7 +1,7 @@
 package com.base.library.rxRetrofit.http.func
 
 import android.util.Log
-import com.base.library.rxRetrofit.http.bean.RetryConfig
+import com.base.library.rxRetrofit.http.config.RetryConfig
 import io.reactivex.Observable
 import io.reactivex.functions.Function
 import java.util.concurrent.TimeUnit

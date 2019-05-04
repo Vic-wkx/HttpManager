@@ -1,4 +1,4 @@
-package com.base.library.rxRetrofit.http.listener
+package com.base.library.rxRetrofit.http.config
 
 /**
  * Description:
