@@ -1,5 +1,7 @@
 package com.base.library.rxRetrofit.http.bean
 
+import okhttp3.Headers
+
 /**
  * Description:
  * 全局BaseApi配置
@@ -10,7 +12,7 @@ package com.base.library.rxRetrofit.http.bean
  */
 open class BaseApiConfig {
     // Retrofit网络请求的BaseUrl
-    open var baseUrl = "http://service.picasso.adesk.com/"
+    open var baseUrl = ""
     // 是否显示Loading弹窗
     open var showLoading = true
     // Loading弹窗是否可取消
@@ -23,4 +25,6 @@ open class BaseApiConfig {
     open var retry = RetryConfig()
     // 超时时间配置
     open var timeOutConfig = TimeOutConfig()
+    // Http请求head信息
+    open var headers: Headers? = null
 }

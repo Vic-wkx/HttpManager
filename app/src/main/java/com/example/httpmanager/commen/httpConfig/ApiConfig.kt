@@ -13,4 +13,6 @@ import com.base.library.rxRetrofit.http.bean.BaseApiConfig
  */
 class ApiConfig : BaseApiConfig() {
     override var baseUrl = "http://service.picasso.adesk.com/"
+    // 设置全局head信息，例如
+    // override var headers = Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
 }

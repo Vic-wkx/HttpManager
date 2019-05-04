@@ -3,6 +3,7 @@ package com.base.library.rxRetrofit.http.api
 import android.util.Log
 import com.base.library.rxRetrofit.RxRetrofitApp
 import com.base.library.rxRetrofit.http.converter.RetrofitStringConverterFactory
+import com.base.library.rxRetrofit.http.interceptor.HeadInterceptor
 import com.base.library.rxRetrofit.http.interceptor.HttpLoggingInterceptor
 import com.base.library.rxRetrofit.http.interceptor.NetCacheInterceptor
 import com.base.library.rxRetrofit.http.interceptor.OfflineCacheInterceptor
@@ -37,6 +38,8 @@ abstract class BaseApi {
     var retry = RxRetrofitApp.apiConfig.retry
     // 超时时间配置
     var timeOutConfig = RxRetrofitApp.apiConfig.timeOutConfig
+    // Http请求head信息
+    var headers = RxRetrofitApp.apiConfig.headers
 
     val retrofit: Retrofit
         get() {
@@ -48,6 +51,7 @@ abstract class BaseApi {
                 .connectTimeout(timeOutConfig.connectionTime, TimeUnit.SECONDS)
                 .readTimeout(timeOutConfig.readTime, TimeUnit.SECONDS)
                 .writeTimeout(timeOutConfig.writeTime, TimeUnit.SECONDS)
+                .addInterceptor(HeadInterceptor(headers))
             if (cacheConfig.cache) {
                 builder.addNetworkInterceptor(NetCacheInterceptor(cacheConfig.onlineCacheTime))
                     .addInterceptor(OfflineCacheInterceptor(cacheConfig.offlineCacheTime))
