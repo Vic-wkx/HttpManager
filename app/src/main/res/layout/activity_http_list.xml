@@ -5,26 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
-    tools:context=".MainActivity">
+    tools:context=".httpList.HttpListActivity">
 
     <Button
-        android:id="@+id/btnHttp"
+        android:id="@+id/btnRequestList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="单个网络请求"
+        android:text="请求多个api数据"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnHttpList"
+    <TextView
+        android:id="@+id/tvResultList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="多个网络请求"
-        app:layout_constraintTop_toBottomOf="@id/btnHttp" />
-
-    <Button
-        android:id="@+id/btnDownload"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="下载文件"
-        app:layout_constraintTop_toBottomOf="@id/btnHttpList" />
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:maxLines="5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnRequestList" />
 </androidx.constraintlayout.widget.ConstraintLayout>

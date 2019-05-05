@@ -1,5 +1,6 @@
 package com.base.library.rxRetrofit.http.observer
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
 import com.base.library.rxRetrofit.RxRetrofitApp
@@ -16,8 +17,13 @@ import io.reactivex.disposables.Disposable
  * Company: Mobile CPX
  * Date:    2019/4/23
  */
-class HttpObserver(private val context: Context, private val api: BaseApi, private val listener: HttpListener) :
-        Observer<String> {
+@SuppressLint("CheckResult")
+class HttpObserver(
+    private val context: Context,
+    private val api: BaseApi,
+    private val listener: HttpListener
+) :
+    Observer<String> {
 
     var loading: ProgressDialog? = null
     var disposable: Disposable? = null
