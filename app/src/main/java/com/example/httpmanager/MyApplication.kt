@@ -18,11 +18,11 @@ import com.example.httpmanager.commen.httpConfig.ResultConverter
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        RxRetrofitApp.init(
-            application = this,
-            resultConverter = ResultConverter(),
+        RxRetrofitApp.apply {
+            application = this@MyApplication
+            resultConverter = ResultConverter()
             apiConfig = ApiConfig()
-        )
+        }
     }
 
     override fun attachBaseContext(base: Context?) {

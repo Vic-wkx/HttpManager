@@ -34,7 +34,7 @@ class HttpListObserver(
     }
 
     private fun showLoadingIfNeed() {
-        if (!config.showLoading || context == RxRetrofitApp.application?.applicationContext) return
+        if (!config.showLoading || context == RxRetrofitApp.application.applicationContext) return
         if (loading == null) {
             loading = ProgressDialog.show(context, null, "Loading", false, config.loadingCancelable) {
                 disposable?.dispose()

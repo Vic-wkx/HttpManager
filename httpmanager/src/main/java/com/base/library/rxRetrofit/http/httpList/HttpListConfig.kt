@@ -1,5 +1,7 @@
 package com.base.library.rxRetrofit.http.httpList
 
+import com.base.library.rxRetrofit.RxRetrofitApp
+
 /**
  * Description:
  * HttpList请求的配置
@@ -10,9 +12,9 @@ package com.base.library.rxRetrofit.http.httpList
  */
 data class HttpListConfig(
         // 是否显示Loading弹窗
-        var showLoading: Boolean = true,
+        var showLoading: Boolean = RxRetrofitApp.httpListConfig.showLoading,
         // Loading弹窗是否可取消
-        var loadingCancelable: Boolean = true,
+        var loadingCancelable: Boolean = RxRetrofitApp.httpListConfig.loadingCancelable,
         // 是否按照顺序请求api
-        var order: Boolean = false
+        var order: Boolean = RxRetrofitApp.httpListConfig.order
 )

@@ -36,7 +36,7 @@ class HttpObserver(
 
     private fun showLoadingIfNeed() {
         // 如果使用的系统application的Context，不允许弹窗
-        if (!api.showLoading || context == RxRetrofitApp.application?.applicationContext) return
+        if (!api.showLoading || context == RxRetrofitApp.application.applicationContext) return
         if (loading == null) {
             loading = ProgressDialog.show(context, null, "Loading", false, api.loadingCancelable) {
                 disposable?.dispose()

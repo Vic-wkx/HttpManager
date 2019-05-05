@@ -67,7 +67,7 @@ abstract class BaseApi {
                     )
                     .cache(
                         Cache(
-                            File(RxRetrofitApp.application?.externalCacheDir, "httpCache"),
+                            File(RxRetrofitApp.application.externalCacheDir, "httpCache"),
                             1024 * 1024 * 50
                         )
                     )
@@ -83,6 +83,5 @@ abstract class BaseApi {
         }
 
     abstract fun getObservable(): Observable<String>
-
 
 }

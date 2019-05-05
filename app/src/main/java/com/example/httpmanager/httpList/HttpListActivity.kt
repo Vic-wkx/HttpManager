@@ -16,7 +16,10 @@ class HttpListActivity : RxAppCompatActivity() {
     private val httpManager by lazy { HttpManager(this) }
     private val randomWallpaperApi by lazy { RandomWallpaperApi() }
     private val categoryApi by lazy { CategoryApi() }
-    private val httpListListener = object : HttpListListener() {
+    private val apis = arrayOf(randomWallpaperApi, categoryApi)
+    private val config = HttpListConfig(showLoading = true, loadingCancelable = true, order = false)
+    private val listener = object : HttpListListener() {
+
         override fun onSingleNext(api: BaseApi, result: String): Any {
             when (api) {
                 randomWallpaperApi -> {
@@ -31,34 +34,25 @@ class HttpListActivity : RxAppCompatActivity() {
 
         override fun onNext(resultMap: HashMap<BaseApi, Any>) {
             // 通过 as 方法，将resultMap中保存的对象取出并转换成onSingleNext返回的类型
-            tvResultList.text = "randomWallpaperApi result: ${resultMap[randomWallpaperApi] as Int}\n" +
-                    "categoryApi result: ${resultMap[categoryApi].toString()}"
+            tvResultList.text =
+                "randomWallpaperApi result: ${resultMap[randomWallpaperApi] as Int}\n" +
+                        "categoryApi result: ${resultMap[categoryApi].toString()}"
         }
 
         override fun onError(error: Throwable) {
             tvResultList.text = error.message
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_http_list)
         initView()
-
     }
 
     private fun initView() {
         btnRequestList.setOnClickListener {
-            httpManager.request(
-                arrayOf(randomWallpaperApi, categoryApi),
-                HttpListConfig(
-                    showLoading = true,
-                    loadingCancelable = true,
-                    order = false
-                ),
-                httpListListener
-            )
+            httpManager.request(apis, config, listener)
         }
     }
 }

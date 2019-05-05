@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_http.*
 class HttpActivity : RxAppCompatActivity() {
     private val httpManager by lazy { HttpManager(this) }
     private val randomWallpaperApi by lazy { RandomWallpaperApi() }
-    private val httpListener = object : HttpListener() {
+    private val listener = object : HttpListener() {
 
         override fun onNext(result: String) {
             tvResult.text = result
@@ -38,7 +38,7 @@ class HttpActivity : RxAppCompatActivity() {
 
     private fun initView() {
         btnRequest.setOnClickListener {
-            httpManager.request(randomWallpaperApi, httpListener)
+            httpManager.request(randomWallpaperApi, listener)
         }
     }
 }

@@ -29,7 +29,7 @@ class HttpManager {
     private var activity: RxAppCompatActivity? = null
     private var fragment: RxFragment? = null
     private val context: Context
-        get() = activity ?: fragment?.context ?: RxRetrofitApp.application?.applicationContext
+        get() = activity ?: fragment?.context ?: RxRetrofitApp.application.applicationContext
         ?: throw Throwable("context is null")
 
     constructor(activity: RxAppCompatActivity) {
