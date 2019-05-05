@@ -22,7 +22,7 @@ class DownConfig {
     /**下载文件的url地址*/
     var url: String = ""
         get() {
-            if (url.isEmpty()) throw NullPointerException("download url is empty")
+            if (field.isEmpty()) throw NullPointerException("download url is empty")
             return field
         }
     /**保存的文件夹路径，如果不设置，默认路径是"应用缓存路径/download",如果设置为外部路径，需要自己确保有读写权限*/
