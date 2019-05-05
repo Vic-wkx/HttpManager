@@ -1,6 +1,7 @@
 package com.base.library.rxRetrofit
 
 import android.app.Application
+import com.base.library.rxRetrofit.httpConfig.ApiConfig
 
 /**
  * Description:
@@ -16,6 +17,7 @@ class RoboApp : Application() {
         super.onCreate()
         RxRetrofitApp.apply {
             application = this@RoboApp
+            apiConfig = ApiConfig()
         }
     }
 }

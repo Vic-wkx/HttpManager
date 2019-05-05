@@ -61,7 +61,10 @@ class HttpManagerTest {
             ),
             listener = object : HttpListListener() {
                 override fun onNext(resultMap: HashMap<BaseApi, Any>) {
-                    if (resultMap.containsKey(randomWallpaperApi) && resultMap.containsKey(categoryApi)) {
+                    if (resultMap.containsKey(randomWallpaperApi) && resultMap.containsKey(
+                            categoryApi
+                        )
+                    ) {
                         println("~~~list:${resultMap[randomWallpaperApi]}\n${resultMap[categoryApi].toString()}")
                     } else {
                         future.complete("resultMap size error:${resultMap.size}")
@@ -78,14 +81,10 @@ class HttpManagerTest {
     }
 
     @Test
-    fun testMimeType(){
-        println("(http://baidu.com/123.zip)"+ Uri.parse("http://baidu.com/123.zip").lastPathSegment)
-        println("(http://baidu.com?123.zip)"+Uri.parse("http://baidu.com/123.zip?a=1").lastPathSegment)
-        println("(http://baidu.com?test/123.zip)"+Uri.parse("http://baidu.com/123.zip/a?b=1").lastPathSegment)
-        println("(http://baidu.com###/123.zip)"+Uri.parse("http://baidu.com/123.zip/?a=1").lastPathSegment)
-        println("(http://baidu.com###?123.zip"+Uri.parse("http://baidu.com###?123.zip").lastPathSegment)
-        println("(http://baidu.com/###123.zip"+Uri.parse("http://baidu.com/###123.zip").lastPathSegment)
-        println("(http://baidu.com###123.zip"+Uri.parse("http://baidu.com###123.zip").lastPathSegment)
+    fun testMimeType() {
+        assertEquals("123.zip", Uri.parse("http://baidu.com/123.zip").lastPathSegment)
+        assertEquals("123.zip", Uri.parse("http://baidu.com/123.zip?a=1").lastPathSegment)
+        assertEquals("123.zip", Uri.parse("http://baidu.com/123.zip/?a=1").lastPathSegment)
     }
 
     @Before
