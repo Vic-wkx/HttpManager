@@ -6,12 +6,12 @@ import com.base.library.rxRetrofit.common.header.HeadInterceptor
 import com.base.library.rxRetrofit.common.header.HttpLoggingInterceptor
 import com.base.library.rxRetrofit.http.cache.NetCacheInterceptor
 import com.base.library.rxRetrofit.http.cache.OfflineCacheInterceptor
-import com.base.library.rxRetrofit.http.converter.RetrofitStringConverterFactory
 import io.reactivex.Observable
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -76,7 +76,8 @@ abstract class BaseApi {
             return Retrofit.Builder()
                 .client(builder.build())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(RetrofitStringConverterFactory.create())
+                // 将返回的数据转换为String
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .baseUrl(baseUrl)
                 .build()
         }
