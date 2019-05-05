@@ -5,8 +5,8 @@ import com.base.library.rxRetrofit.api.CategoryApi
 import com.base.library.rxRetrofit.api.RandomWallpaperApi
 import com.base.library.rxRetrofit.http.HttpManager
 import com.base.library.rxRetrofit.http.api.BaseApi
-import com.base.library.rxRetrofit.http.list.HttpListConfig
-import com.base.library.rxRetrofit.http.listener.HttpListListener
+import com.base.library.rxRetrofit.http.httpList.HttpListConfig
+import com.base.library.rxRetrofit.http.httpList.HttpListListener
 import com.base.library.rxRetrofit.http.listener.HttpListener
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
@@ -54,7 +54,11 @@ class HttpManagerTest {
     fun requestList() {
         val future = CompletableFuture<String>()
         httpManager.request(apis = arrayOf(randomWallpaperApi, categoryApi),
-            config = HttpListConfig(showLoading = true, loadingCancelable = true, order = false),
+            config = HttpListConfig(
+                showLoading = true,
+                loadingCancelable = true,
+                order = false
+            ),
             listener = object : HttpListListener() {
                 override fun onNext(resultMap: HashMap<BaseApi, Any>) {
                     if (resultMap.containsKey(randomWallpaperApi) && resultMap.containsKey(categoryApi)) {

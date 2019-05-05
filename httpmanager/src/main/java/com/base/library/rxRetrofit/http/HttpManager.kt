@@ -2,24 +2,24 @@ package com.base.library.rxRetrofit.http
 
 import android.content.Context
 import com.base.library.rxRetrofit.RxRetrofitApp
+import com.base.library.rxRetrofit.common.extension.bindIOToMainThread
+import com.base.library.rxRetrofit.common.extension.bindLifeCycle
+import com.base.library.rxRetrofit.common.extension.lifeCycle
+import com.base.library.rxRetrofit.common.retry.RetryFunction
 import com.base.library.rxRetrofit.http.api.BaseApi
-import com.base.library.rxRetrofit.http.func.HttpResultFunc
-import com.base.library.rxRetrofit.http.func.RetryFunc
-import com.base.library.rxRetrofit.http.list.HttpListConfig
-import com.base.library.rxRetrofit.http.listener.HttpListListener
+import com.base.library.rxRetrofit.http.converter.HttpResultConverter
+import com.base.library.rxRetrofit.http.httpList.HttpListConfig
+import com.base.library.rxRetrofit.http.httpList.HttpListListener
+import com.base.library.rxRetrofit.http.httpList.HttpListObserver
 import com.base.library.rxRetrofit.http.listener.HttpListener
-import com.base.library.rxRetrofit.http.observer.HttpListObserver
 import com.base.library.rxRetrofit.http.observer.HttpObserver
-import com.base.library.rxRetrofit.http.utils.bindIOToMainThread
-import com.base.library.rxRetrofit.http.utils.bindLifeCycle
-import com.base.library.rxRetrofit.http.utils.lifeCycle
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle3.components.support.RxFragment
 import io.reactivex.Observable
 
 /**
  * Description:
- * HttpManager
+ * HttpManager，用来进行单个api请求或多个api请求
  *
  * @author  WZG
  * Company: Mobile CPX
@@ -45,18 +45,28 @@ class HttpManager {
      */
     constructor()
 
+    /**
+     * 单个api请求
+     */
     fun request(api: BaseApi, listener: HttpListener) {
         api.getObservable()
             /*失败后retry处理控制*/
-            .retryWhen(RetryFunc(api.retry))
+            .retryWhen(RetryFunction(api.retry))
             /*返回数据统一判断*/
-            .map(HttpResultFunc(api))
+            .map(HttpResultConverter(api))
             .bindIOToMainThread()
             .bindLifeCycle(lifeCycle(fragment, activity))
             .subscribe(HttpObserver(context, api, listener))
     }
 
-    fun request(apis: Array<BaseApi>, config: HttpListConfig = HttpListConfig(), listener: HttpListListener) {
+    /**
+     * 多个api请求
+     */
+    fun request(
+        apis: Array<BaseApi>,
+        config: HttpListConfig = HttpListConfig(),
+        listener: HttpListListener
+    ) {
         val resultMap = HashMap<BaseApi, Any>()
         val observable = with(Observable.fromArray(*apis)) {
             if (config.order)
@@ -81,9 +91,9 @@ class HttpManager {
     ): Observable<Unit> {
         return api.getObservable()
             /*失败后retry处理控制*/
-            .retryWhen(RetryFunc(api.retry))
+            .retryWhen(RetryFunction(api.retry))
             /*返回数据统一判断*/
-            .map(HttpResultFunc(api))
+            .map(HttpResultConverter(api))
             .map {
                 resultMap[api] = listener.onSingleNext(api, it)
             }

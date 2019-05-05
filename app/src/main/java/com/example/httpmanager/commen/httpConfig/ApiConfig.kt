@@ -1,6 +1,6 @@
 package com.example.httpmanager.commen.httpConfig
 
-import com.base.library.rxRetrofit.http.config.BaseApiConfig
+import com.base.library.rxRetrofit.http.api.DefaultApiConfig
 
 /**
  * Description:
@@ -11,8 +11,6 @@ import com.base.library.rxRetrofit.http.config.BaseApiConfig
  * Company: Mobile CPX
  * Date:    2019-05-04
  */
-class ApiConfig : BaseApiConfig() {
+class ApiConfig : DefaultApiConfig() {
     override var baseUrl = "http://service.picasso.adesk.com/"
-    // 设置全局head信息，例如
-    // override var headers = Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
 }

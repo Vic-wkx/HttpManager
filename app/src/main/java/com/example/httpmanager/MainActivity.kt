@@ -3,14 +3,14 @@ package com.example.httpmanager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.base.library.rxRetrofit.download.HttpDownManager
+import com.base.library.rxRetrofit.download.bean.DownloadProgress
+import com.base.library.rxRetrofit.download.config.DownConfig
+import com.base.library.rxRetrofit.download.listener.HttpDownListener
 import com.base.library.rxRetrofit.http.HttpManager
 import com.base.library.rxRetrofit.http.api.BaseApi
-import com.base.library.rxRetrofit.http.down.DownConfig
-import com.base.library.rxRetrofit.http.down.DownloadProgress
-import com.base.library.rxRetrofit.http.down.HttpDownListener
-import com.base.library.rxRetrofit.http.down.HttpDownManager
-import com.base.library.rxRetrofit.http.list.HttpListConfig
-import com.base.library.rxRetrofit.http.listener.HttpListListener
+import com.base.library.rxRetrofit.http.httpList.HttpListConfig
+import com.base.library.rxRetrofit.http.httpList.HttpListListener
 import com.base.library.rxRetrofit.http.listener.HttpListener
 import com.example.httpmanager.commen.api.CategoryApi
 import com.example.httpmanager.commen.api.RandomWallpaperApi
@@ -32,8 +32,8 @@ class MainActivity : RxAppCompatActivity() {
     private val randomWallpaperApi by lazy { RandomWallpaperApi() }
     private val categoryApi by lazy { CategoryApi() }
     private val config = DownConfig().apply {
-//        url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-        url = "http://dldir1.qq.com/qqmi/aphone_p2p/TencentVideo_V6.0.0.14297_848.apk"
+        url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+//        url = "http://dldir1.qq.com/qqmi/aphone_p2p/TencentVideo_V6.0.0.14297_848.apk"
         /**进度更新频率，下载多少Byte后更新一次进度。默认每下载4KB更新一次，这里设置为每512KB更新一次。
          * 使用[DownConfig.PROGRESS_BY_PERCENT]表示每下载百分之一更新一次*/
         progressStep = 1024 * 512
@@ -141,7 +141,11 @@ class MainActivity : RxAppCompatActivity() {
         btnRequestList.setOnClickListener {
             httpManager.request(
                 arrayOf(randomWallpaperApi, categoryApi),
-                HttpListConfig(showLoading = true, loadingCancelable = true, order = false),
+                HttpListConfig(
+                    showLoading = true,
+                    loadingCancelable = true,
+                    order = false
+                ),
                 httpListListener
             )
         }

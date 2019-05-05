@@ -2,7 +2,7 @@ package com.example.httpmanager.commen.bean
 
 /**
  * Description:
- * Http返回数据基类
+ * Http返回数据基类，需要根据后台的接口返回数据自定义
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX

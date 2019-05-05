@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.multidex.MultiDex
 import com.base.library.rxRetrofit.RxRetrofitApp
 import com.example.httpmanager.commen.httpConfig.ApiConfig
-import com.example.httpmanager.commen.httpConfig.ResultFunc
+import com.example.httpmanager.commen.httpConfig.ResultConverter
 
 /**
  * Description:
@@ -18,7 +18,11 @@ import com.example.httpmanager.commen.httpConfig.ResultFunc
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        RxRetrofitApp.init(this, ResultFunc(), ApiConfig())
+        RxRetrofitApp.init(
+            application = this,
+            resultConverter = ResultConverter(),
+            apiConfig = ApiConfig()
+        )
     }
 
     override fun attachBaseContext(base: Context?) {

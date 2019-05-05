@@ -1,8 +1,8 @@
 package com.base.library.rxRetrofit
 
 import com.alibaba.fastjson.JSONObject
-import com.base.library.rxRetrofit.http.down.DownConfig
-import com.base.library.rxRetrofit.http.down.HttpDownManager
+import com.base.library.rxRetrofit.download.config.DownConfig
+import com.base.library.rxRetrofit.download.HttpDownManager
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
 import org.junit.Assert.assertEquals

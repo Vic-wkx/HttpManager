@@ -2,11 +2,11 @@ package com.base.library.rxRetrofit.http.api
 
 import android.util.Log
 import com.base.library.rxRetrofit.RxRetrofitApp
+import com.base.library.rxRetrofit.common.header.HeadInterceptor
+import com.base.library.rxRetrofit.common.header.HttpLoggingInterceptor
+import com.base.library.rxRetrofit.http.cache.NetCacheInterceptor
+import com.base.library.rxRetrofit.http.cache.OfflineCacheInterceptor
 import com.base.library.rxRetrofit.http.converter.RetrofitStringConverterFactory
-import com.base.library.rxRetrofit.http.interceptor.HeadInterceptor
-import com.base.library.rxRetrofit.http.interceptor.HttpLoggingInterceptor
-import com.base.library.rxRetrofit.http.interceptor.NetCacheInterceptor
-import com.base.library.rxRetrofit.http.interceptor.OfflineCacheInterceptor
 import io.reactivex.Observable
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -38,23 +38,33 @@ abstract class BaseApi {
     var retry = RxRetrofitApp.apiConfig.retry
     // 超时时间配置
     var timeOutConfig = RxRetrofitApp.apiConfig.timeOutConfig
-    // Http请求head信息
+    // Http请求head信息，例如Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
     var headers = RxRetrofitApp.apiConfig.headers
 
     val retrofit: Retrofit
         get() {
             //手动创建一个OkHttpClient并设置超时时间缓存等设置
             val builder = OkHttpClient.Builder()
-                .addInterceptor(HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
-                    Log.d("RxRetrofit", "Retrofit~~~Message:$it")
-                }))
+                .addInterceptor(
+                    HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
+                        Log.d("RxRetrofit", it)
+                    })
+                )
                 .connectTimeout(timeOutConfig.connectionTime, TimeUnit.SECONDS)
                 .readTimeout(timeOutConfig.readTime, TimeUnit.SECONDS)
                 .writeTimeout(timeOutConfig.writeTime, TimeUnit.SECONDS)
                 .addInterceptor(HeadInterceptor(headers))
             if (cacheConfig.cache) {
-                builder.addNetworkInterceptor(NetCacheInterceptor(cacheConfig.onlineCacheTime))
-                    .addInterceptor(OfflineCacheInterceptor(cacheConfig.offlineCacheTime))
+                builder.addNetworkInterceptor(
+                    NetCacheInterceptor(
+                        cacheConfig.onlineCacheTime
+                    )
+                )
+                    .addInterceptor(
+                        OfflineCacheInterceptor(
+                            cacheConfig.offlineCacheTime
+                        )
+                    )
                     .cache(
                         Cache(
                             File(RxRetrofitApp.application?.externalCacheDir, "httpCache"),
