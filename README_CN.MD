@@ -7,6 +7,10 @@
 
 这是一个封装了Http网络请求、HTTP多接口合并、网络文件下载的库。改编自[wzgiceman](https://github.com/wzgiceman)的[RxRetrofit库](https://github.com/wzgiceman/RxjavaRetrofitDemo-string-master)。
 
+## 屏幕截图
+
+<img src="screenshots/singleApi.gif" width=25%><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><img src="screenshots/apis.gif" width=25%><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><img src="screenshots/download.gif" width=25%>
+
 ## 下载
 
 第一步. 在根目录的*build.gradle*中添加以下代码:
@@ -159,7 +163,7 @@ class BaseResult {
     var code: Int = 0
     // 请求失败时，此变量携带错误信息
     var msg: String = ""
-    // 此变量存储返回的String数据
+    // 此变量存储返回的业务数据
     var res: String = ""
 }
 ```
@@ -427,9 +431,8 @@ HttpDownManager.down(DownConfig().apply {
     /**保存的文件名字，如果不设置，默认名字是url的最后一段*/
     saveFileName = "big_buck_bunny.mp4"
     /**下载进度更新频率，即下载多少B之后更新一次，使用[PROGRESS_BY_PERCENT]表示按百分比更新*/
-    /**进度更新频率，下载多少Byte后更新一次进度。默认每下载4KB更新一次，这里设置为每512KB更新一次。
-     * 使用[DownConfig.PROGRESS_BY_PERCENT]表示每下载百分之一更新一次*/
-    progressStep = 1024 * 512
+    /**进度更新频率，下载多少Byte后更新一次进度。默认每下载4KB更新一次，使用[DownConfig.PROGRESS_BY_PERCENT]表示每下载百分之一更新一次*/
+    progressStep = 1024 * 128
     /**重试配置*/
     retry = RetryConfig()
     /**head信息*/
@@ -443,7 +446,7 @@ HttpDownManager.down(DownConfig().apply {
 
 ## LICENSE
 
-    Copyright (c) 2018-present, Alpinist Wang Contributors.
+    Copyright (c) 2019-present, Alpinist Wang Contributors.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

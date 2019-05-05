@@ -7,6 +7,10 @@
 
 This is a library that encapsulates Http network requests, HTTP multi-interface merges, and network file downloads. Adapted from [wzgiceman](https://github.com/wzgiceman)'s [RxRetrofit library](https://github.com/wzgiceman/RxjavaRetrofitDemo-string-master).
 
+## Screenshots
+
+<img src="screenshots/singleApi.gif" width=25%><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><img src="screenshots/apis.gif" width=25%><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><img src="screenshots/download.gif" width=25%>
+
 ## Download
 
 Step 1. Add it in your root *build.gradle* at the end of repositories:
@@ -403,7 +407,7 @@ HttpDownManager.down(DownConfig().apply {
     saveDir = "${RxRetrofitApp.application.externalCacheDir?.absolutePath}/download/"
     /**The name of the saved file. If not set, the default name is the last path segment of the url.*/
     saveFileName = "big_buck_bunny.mp4"
-    progressStep = 1024 * 512
+    progressStep = 1024 * 128
     retry = RetryConfig()
     headers = Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
 })
@@ -415,7 +419,7 @@ If you have any questions or suggestions, feel free to create an [issue](https:/
 
 ## LICENSE
 
-    Copyright (c) 2018-present, Alpinist Wang Contributors.
+    Copyright (c) 2019-present, Alpinist Wang Contributors.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

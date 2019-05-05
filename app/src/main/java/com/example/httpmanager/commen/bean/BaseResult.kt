@@ -13,6 +13,6 @@ class BaseResult {
     var code: Int = 0
     // 请求失败时，此变量携带错误信息
     var msg: String = ""
-    // 此变量存储返回的String数据
+    // 此变量存储返回的业务数据
     var res: String = ""
 }
