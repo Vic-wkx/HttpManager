@@ -6,7 +6,7 @@ import okhttp3.Headers
 
 /**
  * Description:
- *
+ * 下载配置
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX

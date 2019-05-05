@@ -5,7 +5,7 @@ import io.reactivex.disposables.Disposable
 
 /**
  * Description:
- *
+ * 多接口合并请求监听器
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX

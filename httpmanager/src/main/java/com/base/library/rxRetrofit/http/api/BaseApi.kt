@@ -55,16 +55,8 @@ abstract class BaseApi {
                 .writeTimeout(timeOutConfig.writeTime, TimeUnit.SECONDS)
                 .addInterceptor(HeadInterceptor(headers))
             if (cacheConfig.cache) {
-                builder.addNetworkInterceptor(
-                    NetCacheInterceptor(
-                        cacheConfig.onlineCacheTime
-                    )
-                )
-                    .addInterceptor(
-                        OfflineCacheInterceptor(
-                            cacheConfig.offlineCacheTime
-                        )
-                    )
+                builder.addNetworkInterceptor(NetCacheInterceptor(cacheConfig.onlineCacheTime))
+                    .addInterceptor(OfflineCacheInterceptor(cacheConfig.offlineCacheTime))
                     .cache(
                         Cache(
                             File(RxRetrofitApp.application.externalCacheDir, "httpCache"),

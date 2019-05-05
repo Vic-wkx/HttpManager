@@ -9,7 +9,7 @@ import retrofit2.http.Url
 
 /**
  * Description:
- *
+ * Rxtrofit断点续传下载Service类
  *
  * @author  WZG
  * Company: Mobile CPX
