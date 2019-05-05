@@ -14,6 +14,8 @@ class RoboApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        RxRetrofitApp.init(this)
+        RxRetrofitApp.apply {
+            application = this@RoboApp
+        }
     }
 }
