@@ -12,13 +12,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         // 传递混淆规则
-        consumerProguardFiles 'login-manager-proguard-rules.pro'
+        consumerProguardFiles 'http-manager-proguard-rules.pro'
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'http-manager-proguard-rules.pro'
         }
     }
 
