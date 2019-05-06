@@ -27,7 +27,7 @@ allprojects {
 第二步. 添加gradle依赖
 
 ```
-implementation 'com.github.wkxjc:HttpManager:1.6'
+implementation 'com.github.wkxjc:HttpManager:1.7'
 ```
 
 ## 如何使用？
