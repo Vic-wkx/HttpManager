@@ -64,6 +64,7 @@ object HttpDownManager {
             }, {
                 listeners[config]?.onComplete()
             }, {
+                DownRecordUtils.downloading(config.url)
                 listeners[config]?.onSubscribe(it)
             })
         downloadingDisposables[config] = disposable

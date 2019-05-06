@@ -27,7 +27,7 @@ allprojects {
 Step 2. Add the dependency
 
 ```
-implementation 'com.github.wkxjc:HttpManager:1.5'
+implementation 'com.github.wkxjc:HttpManager:1.6'
 ```
 
 ## How to use?

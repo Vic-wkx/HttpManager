@@ -35,7 +35,6 @@ object FileDownloadUtils {
             inputStream = responseBody.byteStream()
             randomAccessFile = RandomAccessFile(file, "rwd")
             val total = range + responseBody.contentLength()
-            DownRecordUtils.downloading(config.url)
             DownRecordUtils.saveTotal(config.url, total)
             randomAccessFile.setLength(total)
             randomAccessFile.seek(range)
