@@ -21,7 +21,6 @@ class DownloadActivity : RxAppCompatActivity() {
 
     private val listener = object : HttpDownListener() {
         override fun onProgress(downloadProgress: DownloadProgress) {
-            Log.d("~~~", "onProgress:$downloadProgress")
             tvProgress.text = "下载中: ${downloadProgress.memoryProgress}"
             progressBar.progress = downloadProgress.progress
         }

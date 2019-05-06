@@ -32,8 +32,8 @@ abstract class BaseApi {
     var loadingCancelable = RxRetrofitApp.apiConfig.loadingCancelable
     // 缓存配置
     var cacheConfig = RxRetrofitApp.apiConfig.cacheConfig
-    // 是否忽略BaseResult判断
-    var ignoreJudge = RxRetrofitApp.apiConfig.ignoreJudge
+    // 是否忽略ResultConverter解析
+    var ignoreResultConverter = RxRetrofitApp.apiConfig.ignoreResultConverter
     // 重试配置
     var retry = RxRetrofitApp.apiConfig.retry
     // 超时时间配置

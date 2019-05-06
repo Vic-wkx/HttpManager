@@ -35,6 +35,8 @@ implementation 'com.github.wkxjc:HttpManager:1.5'
 1.Single network request：
 
 ```
+private val httpManager by lazy { HttpManager(this) }
+...
 httpManager.request(randomWallpaperApi, object : HttpListener() {
 
     override fun onNext(result: String) {
@@ -50,6 +52,8 @@ httpManager.request(randomWallpaperApi, object : HttpListener() {
 2.Multiple network requests：
 
 ```
+private val httpManager by lazy { HttpManager(this) }
+...
 httpManager.request(
     apis = arrayOf(randomWallpaperApi, categoryApi),
     listener = object : HttpListListener() {
@@ -106,7 +110,7 @@ class ApiConfig : DefaultApiConfig() {
 }
 ```
 
-Step 2. Initialize RxRetrofitApp in Application:
+Step 2. Initialize RxRetrofitApp in Application, set apiConfig:
 
 ```
 RxRetrofitApp.apply {
@@ -191,7 +195,7 @@ RxRetrofitApp.apply {
 }
 ```
 
-You can turned off it in the api via the "ignoreJudge" configuration.
+You can turned off it in the api via the "ignoreResultConverter" configuration.
 
 ## HttpResponseProcessor
 
@@ -241,7 +245,7 @@ open class DefaultApiConfig {
         offlineCacheTime = 60 * 60 * 24 * 30
     }
     // Whether to ignore the BaseResult converter
-    open var ignoreJudge: Boolean = false
+    open var ignoreResultConverter: Boolean = false
     // Retry configuration
     open var retry = RetryConfig().apply {
         // times of retry
@@ -280,7 +284,7 @@ class RandomWallpaperApi : BaseApi() {
             onlineCacheTime = 30
             offlineCacheTime = 60 * 60 * 24 * 30
         }
-        ignoreJudge = false
+        ignoreResultConverter = false
         retry = RetryConfig().apply {
             count = 5
             delay = 100L

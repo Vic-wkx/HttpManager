@@ -1,10 +1,9 @@
 package com.base.library.rxRetrofit.common.utils
 
 import android.annotation.SuppressLint
-import android.util.Log
-import com.base.library.rxRetrofit.download.config.DownConfig
-import com.base.library.rxRetrofit.download.bean.DownloadProgress
 import com.base.library.rxRetrofit.download.HttpDownManager
+import com.base.library.rxRetrofit.download.bean.DownloadProgress
+import com.base.library.rxRetrofit.download.config.DownConfig
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.ResponseBody
@@ -65,21 +64,13 @@ object FileDownloadUtils {
                 Observable.just(downloadProgress)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
-                        if (!HttpDownManager.isDownloading(config)) {
-                            Log.e("~~~", "isDownloading = false")
-                            return@subscribe
-                        }
-                        HttpDownManager.getListener(config)
-                            ?.onProgress(it)
+                        if (!HttpDownManager.isDownloading(config)) return@subscribe
+                        HttpDownManager.getListener(config)?.onProgress(it)
                     }
                 lastDownloadProgress = downloadProgress
             }
         } catch (e: IOException) {
-            if (!HttpDownManager.isDownloading(config)) {
-                Log.e("~~~", "write to file Exception:$e")
-                return
-            }
-            throw Throwable("write to file Exception:$e")
+            if (HttpDownManager.isDownloading(config)) throw Throwable("write to file Exception:$e")
         } finally {
             try {
                 inputStream?.close()

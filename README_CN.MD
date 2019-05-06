@@ -35,6 +35,8 @@ implementation 'com.github.wkxjc:HttpManager:1.5'
 1.单个网络请求：
 
 ```
+private val httpManager by lazy { HttpManager(this) }
+...
 httpManager.request(randomWallpaperApi, object : HttpListener() {
 
     override fun onNext(result: String) {
@@ -50,6 +52,8 @@ httpManager.request(randomWallpaperApi, object : HttpListener() {
 2.多个网络请求：
 
 ```
+private val httpManager by lazy { HttpManager(this) }
+...
 httpManager.request(
     apis = arrayOf(randomWallpaperApi, categoryApi),
     listener = object : HttpListListener() {
@@ -106,7 +110,7 @@ class ApiConfig : DefaultApiConfig() {
 }
 ```
 
-第二步. 在Application中初始化RxRetrofitApp:
+第二步. 在Application中初始化RxRetrofitApp，设置apiConfig:
 
 ```
 RxRetrofitApp.apply {
@@ -191,7 +195,7 @@ RxRetrofitApp.apply {
 }
 ```
 
-在api中可以通过ignoreJudge配置关闭这一层解析
+在api中可以通过ignoreResultConverter配置关闭这一层解析
 
 ## Http返回码统一处理
 
@@ -239,8 +243,8 @@ open class DefaultApiConfig {
         // 没网的时候的缓存过期时间
         offlineCacheTime = 60 * 60 * 24 * 30
     }
-    // 是否忽略BaseResult判断
-    open var ignoreJudge: Boolean = false
+    // 是否忽略ResultConverter解析
+    open var ignoreResultConverter: Boolean = false
     // 重试配置
     open var retry = RetryConfig().apply {
         // 重试次数
@@ -289,8 +293,8 @@ class RandomWallpaperApi : BaseApi() {
             // 没网的时候的缓存过期时间
             offlineCacheTime = 60 * 60 * 24 * 30
         }
-        // 是否忽略BaseResult判断
-        ignoreJudge = false
+        // 是否忽略ResultConverter解析
+        ignoreResultConverter = false
         // 重试配置
         retry = RetryConfig().apply {
             // 重试次数
@@ -426,8 +430,7 @@ RxRetrofitApp.apply {
 ```
 HttpDownManager.down(DownConfig().apply {
     url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-    saveDir =
-        "${RxRetrofitApp.application.externalCacheDir?.absolutePath}/download/"
+    saveDir = "${RxRetrofitApp.application.externalCacheDir?.absolutePath}/download/"
     /**保存的文件名字，如果不设置，默认名字是url的最后一段*/
     saveFileName = "big_buck_bunny.mp4"
     /**下载进度更新频率，即下载多少B之后更新一次，使用[PROGRESS_BY_PERCENT]表示按百分比更新*/

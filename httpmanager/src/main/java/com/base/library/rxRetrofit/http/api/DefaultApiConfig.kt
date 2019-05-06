@@ -22,8 +22,8 @@ open class DefaultApiConfig {
     open var loadingCancelable = true
     // 缓存配置
     open var cacheConfig = CacheConfig()
-    // 是否忽略BaseResult判断
-    open var ignoreJudge: Boolean = false
+    // 是否忽略ResultConverter解析
+    open var ignoreResultConverter: Boolean = false
     // 重试配置
     open var retry = RetryConfig()
     // 超时时间配置

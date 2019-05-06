@@ -15,7 +15,7 @@ import io.reactivex.functions.Function
 class HttpResultConverter(private val api: BaseApi) : Function<String, String> {
 
     override fun apply(response: String): String {
-        if (api.ignoreJudge) return response
+        if (api.ignoreResultConverter) return response
         if (response.isEmpty()) throw NullPointerException("response is empty.")
         // 根据结果转换器解析数据
         return RxRetrofitApp.resultConverter.convert(response)
