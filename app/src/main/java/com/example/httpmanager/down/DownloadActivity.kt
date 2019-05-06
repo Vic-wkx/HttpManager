@@ -12,6 +12,14 @@ import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_download.*
 
+/**
+ * Description:
+ * 下载文件示例
+ *
+ * @author  Alpinist Wang
+ * Company: Mobile CPX
+ * Date:    2019-05-06
+ */
 class DownloadActivity : RxAppCompatActivity() {
     private val config = DownConfig().apply {
         url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"

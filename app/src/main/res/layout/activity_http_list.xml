@@ -18,8 +18,6 @@
         android:id="@+id/tvResultList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:ellipsize="end"
-        android:maxLines="5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnRequestList" />
 </androidx.constraintlayout.widget.ConstraintLayout>

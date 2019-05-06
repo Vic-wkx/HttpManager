@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_http.*
 
 /**
  * Description:
- * 单个Http请求
+ * 单个Http请求示例
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX
@@ -22,7 +22,9 @@ class HttpActivity : RxAppCompatActivity() {
     private val listener = object : HttpListener() {
 
         override fun onNext(result: String) {
-            tvResult.text = result
+            // 对数据的解析或其他处理都在api中进行，此界面只做展示相关处理
+            val wallpaper = randomWallpaperApi.convert(result)
+            if (wallpaper.vertical.isNotEmpty()) tvResult.append("获取壁纸结果示例：${wallpaper.vertical[0].img}\n\n")
         }
 
         override fun onError(error: Throwable) {

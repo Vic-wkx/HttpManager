@@ -1,6 +1,8 @@
 package com.example.httpmanager.commen.api
 
+import com.alibaba.fastjson.JSONArray
 import com.base.library.rxRetrofit.http.api.BaseApi
+import com.example.httpmanager.commen.bean.Category
 import io.reactivex.Observable
 
 /**
@@ -18,4 +20,11 @@ class CategoryApi : BaseApi() {
         return apiService.getCategory()
     }
 
+    /**
+     * 将返回结果转换成业务层需要的类型
+     */
+    fun convert(result: String): Category {
+        val category = JSONArray.parseObject(result, Category::class.java)
+        return category
+    }
 }
