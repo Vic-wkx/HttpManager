@@ -14,6 +14,9 @@ import retrofit2.http.Query
  */
 interface WallpaperApiService {
 
+    /**
+     * 随机获取壁纸接口
+     */
     @GET("v1/vertical/vertical")
     fun getRandomWallpaper(
         @Query("limit") limit: Int = 30,
@@ -23,6 +26,9 @@ interface WallpaperApiService {
         @Query("order") order: String = "hot"
     ): Observable<String>
 
+    /**
+     * 获取壁纸分类接口
+     */
     @GET("v1/vertical/category")
     fun getCategory(
         @Query("adult") adult: Boolean = false,

@@ -7,7 +7,7 @@ import io.reactivex.Observable
 
 /**
  * Description:
- * 分类获取壁纸Api
+ * 获取壁纸分类Api
  *
  * @author  Alpinist Wang
  * Company: Mobile CPX
