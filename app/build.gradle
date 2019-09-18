@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.example.httpmanager"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -37,6 +37,6 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.alibaba:fastjson:1.2.57'
-    implementation project(':httpmanager')
-//    implementation 'com.github.wkxjc:HttpManager:1.8'
+//    implementation project(':httpmanager')
+    implementation 'com.github.wkxjc:HttpManager:1.8'
 }
