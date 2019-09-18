@@ -41,7 +41,7 @@ object HttpDownManager {
         if (isDownloading(config)) return
         // 创建retrofit对象
         val builder = OkHttpClient.Builder()
-            .addInterceptor(HeadInterceptor(config.headers))
+            .addInterceptor(HeadInterceptor(null, config.headers))
         val retrofit = Retrofit.Builder()
             .client(builder.build())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

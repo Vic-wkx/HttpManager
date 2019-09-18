@@ -1,5 +1,6 @@
 package com.base.library.rxRetrofit.http.api
 
+import com.base.library.rxRetrofit.RxRetrofitApp
 import com.base.library.rxRetrofit.common.retry.RetryConfig
 import com.base.library.rxRetrofit.http.cache.CacheConfig
 import com.base.library.rxRetrofit.http.timeout.TimeoutConfig
@@ -24,6 +25,8 @@ open class DefaultApiConfig {
     open var cacheConfig = CacheConfig()
     // 是否忽略ResultConverter解析
     open var ignoreResultConverter: Boolean = false
+    // 是否忽略ResponseProcessor对返回结果的处理
+    open var ignoreResponseProcessor: Boolean = false
     // 重试配置
     open var retry = RetryConfig()
     // 超时时间配置

@@ -1,6 +1,7 @@
 package com.base.library.rxRetrofit.common.header
 
 import com.base.library.rxRetrofit.RxRetrofitApp
+import com.base.library.rxRetrofit.http.api.BaseApi
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -13,7 +14,7 @@ import okhttp3.Response
  * Company: Mobile CPX
  * Date:    2019-05-04
  */
-class HeadInterceptor(private val headers: Headers?) : Interceptor {
+class HeadInterceptor(private val api: BaseApi?, private val headers: Headers?) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
@@ -23,6 +24,7 @@ class HeadInterceptor(private val headers: Headers?) : Interceptor {
         val request = requestBuilder.method(original.method(), original.body())
             .build()
         val response = chain.proceed(request)
-        return RxRetrofitApp.httpResponseProcessor.handleResponse(response)
+        return if (RxRetrofitApp.apiConfig.ignoreResponseProcessor || api?.ignoreResponseProcessor == true) response
+        else RxRetrofitApp.httpResponseProcessor.handleResponse(response)
     }
 }

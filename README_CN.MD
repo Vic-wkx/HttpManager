@@ -27,7 +27,7 @@ allprojects {
 第二步. 添加gradle依赖
 
 ```
-implementation 'com.github.wkxjc:HttpManager:1.7'
+implementation 'com.github.wkxjc:HttpManager:1.8'
 ```
 
 ## 如何使用？
@@ -220,6 +220,8 @@ RxRetrofitApp.apply {
 }
 ```
 
+在api中可以通过ignoreResponseProcessor配置关闭这一层解析
+
 ## 定制
 
 ### 1.全局修改网络请求默认配置
@@ -245,6 +247,8 @@ open class DefaultApiConfig {
     }
     // 是否忽略ResultConverter解析
     open var ignoreResultConverter: Boolean = false
+    // 是否忽略ResponseProcessor对返回结果的处理
+    open var ignoreResponseProcessor: Boolean = false
     // 重试配置
     open var retry = RetryConfig().apply {
         // 重试次数
@@ -295,6 +299,8 @@ class RandomWallpaperApi : BaseApi() {
         }
         // 是否忽略ResultConverter解析
         ignoreResultConverter = false
+        // 是否忽略ResponseProcessor对返回结果的处理
+        ignoreResponseProcessor = false
         // 重试配置
         retry = RetryConfig().apply {
             // 重试次数

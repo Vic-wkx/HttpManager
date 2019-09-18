@@ -11,6 +11,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -25,20 +26,31 @@ import java.util.concurrent.TimeUnit
  */
 abstract class BaseApi {
     // Retrofit网络请求的BaseUrl
+    @Transient
     var baseUrl = RxRetrofitApp.apiConfig.baseUrl
     // 是否显示Loading弹窗
+    @Transient
     var showLoading = RxRetrofitApp.apiConfig.showLoading
     // Loading弹窗是否可取消
+    @Transient
     var loadingCancelable = RxRetrofitApp.apiConfig.loadingCancelable
     // 缓存配置
+    @Transient
     var cacheConfig = RxRetrofitApp.apiConfig.cacheConfig
     // 是否忽略ResultConverter解析
+    @Transient
     var ignoreResultConverter = RxRetrofitApp.apiConfig.ignoreResultConverter
+    // 是否忽略ResponseProcessor对返回结果的处理
+    @Transient
+    var ignoreResponseProcessor = RxRetrofitApp.apiConfig.ignoreResponseProcessor
     // 重试配置
+    @Transient
     var retry = RxRetrofitApp.apiConfig.retry
     // 超时时间配置
+    @Transient
     var timeOutConfig = RxRetrofitApp.apiConfig.timeOutConfig
     // Http请求head信息，例如Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
+    @Transient
     var headers = RxRetrofitApp.apiConfig.headers
 
     val retrofit: Retrofit
@@ -53,7 +65,7 @@ abstract class BaseApi {
                 .connectTimeout(timeOutConfig.connectionTime, TimeUnit.SECONDS)
                 .readTimeout(timeOutConfig.readTime, TimeUnit.SECONDS)
                 .writeTimeout(timeOutConfig.writeTime, TimeUnit.SECONDS)
-                .addInterceptor(HeadInterceptor(headers))
+                .addInterceptor(HeadInterceptor(this, headers))
             if (cacheConfig.cache) {
                 builder.addNetworkInterceptor(NetCacheInterceptor(cacheConfig.onlineCacheTime))
                     .addInterceptor(OfflineCacheInterceptor(cacheConfig.offlineCacheTime))
@@ -70,6 +82,7 @@ abstract class BaseApi {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 // 将返回的数据转换为String
                 .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(baseUrl)
                 .build()
         }

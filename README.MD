@@ -221,6 +221,8 @@ RxRetrofitApp.apply {
 }
 ```
 
+You can turned off it in the api via the "ignoreResponseProcessor" configuration.
+
 ## Custom configuration
 
 ### 1.Globally modify the network request default configuration
@@ -246,6 +248,8 @@ open class DefaultApiConfig {
     }
     // Whether to ignore the BaseResult converter
     open var ignoreResultConverter: Boolean = false
+    // Whether to ignore the ResponseProcessor
+    open var ignoreResponseProcessor: Boolean = false
     // Retry configuration
     open var retry = RetryConfig().apply {
         // times of retry
@@ -285,6 +289,7 @@ class RandomWallpaperApi : BaseApi() {
             offlineCacheTime = 60 * 60 * 24 * 30
         }
         ignoreResultConverter = false
+        ignoreResponseProcessor = false
         retry = RetryConfig().apply {
             count = 5
             delay = 100L
