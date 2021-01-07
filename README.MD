@@ -448,7 +448,7 @@ If you have any questions or suggestions, feel free to create an [issue](https:/
 
 ## LICENSE
 
-    Copyright (c) 2019-present, Alpinist Wang Contributors.
+    Copyright (c) 2021-present, Alpinist Wang Contributors.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
