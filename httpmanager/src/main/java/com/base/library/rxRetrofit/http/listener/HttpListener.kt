@@ -7,7 +7,6 @@ import io.reactivex.disposables.Disposable
  * Http回调监听器
  *
  * @author  WZG
- * Company: Mobile CPX
  * Date:    2019/4/23
  */
 abstract class HttpListener {

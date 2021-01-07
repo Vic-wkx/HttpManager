@@ -1,18 +1,18 @@
 package com.base.library.rxRetrofit.download.bean
 
 import com.base.library.rxRetrofit.common.utils.ConvertUtils
+import kotlin.math.roundToInt
 
 /**
  * Description:
  * 下载进度
  *
  * @author  Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019-04-30
  */
 class DownloadProgress(var read: Long, var total: Long) {
     val progress: Int
-        get() = Math.round(read / (total * 1.0) * 100).toInt()
+        get() = (read / (total * 1.0) * 100).roundToInt()
 
     /**
      * 内存大小进度

@@ -526,7 +526,7 @@ public final class ConvertUtils {
      * @return drawable
      */
     public static Drawable bitmap2Drawable(final Bitmap bitmap) {
-        return bitmap == null ? null : new BitmapDrawable(RxRetrofitApp.getApplication().getResources(), bitmap);
+        return bitmap == null ? null : new BitmapDrawable(RxRetrofitApp.application.getResources(), bitmap);
     }
 
     /**
@@ -579,7 +579,7 @@ public final class ConvertUtils {
      * @return value of px
      */
     public static int dp2px(final float dpValue) {
-        final float scale = RxRetrofitApp.getApplication().getResources().getDisplayMetrics().density;
+        final float scale = RxRetrofitApp.application.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
@@ -590,7 +590,7 @@ public final class ConvertUtils {
      * @return value of dp
      */
     public static int px2dp(final float pxValue) {
-        final float scale = RxRetrofitApp.getApplication().getResources().getDisplayMetrics().density;
+        final float scale = RxRetrofitApp.application.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
@@ -601,7 +601,7 @@ public final class ConvertUtils {
      * @return value of px
      */
     public static int sp2px(final float spValue) {
-        final float fontScale = RxRetrofitApp.getApplication().getResources().getDisplayMetrics().scaledDensity;
+        final float fontScale = RxRetrofitApp.application.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
 
@@ -612,7 +612,7 @@ public final class ConvertUtils {
      * @return value of sp
      */
     public static int px2sp(final float pxValue) {
-        final float fontScale = RxRetrofitApp.getApplication().getResources().getDisplayMetrics().scaledDensity;
+        final float fontScale = RxRetrofitApp.application.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
 

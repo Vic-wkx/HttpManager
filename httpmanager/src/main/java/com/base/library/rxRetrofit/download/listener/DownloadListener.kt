@@ -8,10 +8,9 @@ import io.reactivex.disposables.Disposable
  * 下载监听器
  *
  * @author  Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019-04-26
  */
-abstract class HttpDownListener {
+abstract class DownloadListener {
 
     abstract fun onProgress(downloadProgress: DownloadProgress)
 

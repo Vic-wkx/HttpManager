@@ -37,7 +37,6 @@ import okio.BufferedSource;
  * 日志输出类，默认Level为Level.BODY
  *
  * @author Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019-05-05
  */
 public final class HttpLoggingInterceptor implements Interceptor {

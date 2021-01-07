@@ -4,7 +4,10 @@ import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
 import com.base.library.rxRetrofit.RxRetrofitApp
-import com.example.httpmanager.commen.httpConfig.ApiConfig
+import com.base.library.rxRetrofit.http.httpList.HttpListConfig
+import com.example.httpmanager.commen.httpConfig.MyApiConfig
+import com.example.httpmanager.commen.httpConfig.MyDownloadConfig
+import com.example.httpmanager.commen.httpConfig.MyHttpListApiConfig
 import com.example.httpmanager.commen.httpConfig.ResultConverter
 
 /**
@@ -12,7 +15,6 @@ import com.example.httpmanager.commen.httpConfig.ResultConverter
  * app入口
  *
  * @author  Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019-04-24
  */
 class MyApplication : Application() {
@@ -20,8 +22,9 @@ class MyApplication : Application() {
         super.onCreate()
         RxRetrofitApp.apply {
             application = this@MyApplication
-            resultConverter = ResultConverter()
-            apiConfig = ApiConfig()
+            apiConfig = MyApiConfig()
+            httpListConfig = MyHttpListApiConfig()
+            downConfig = MyDownloadConfig()
         }
     }
 

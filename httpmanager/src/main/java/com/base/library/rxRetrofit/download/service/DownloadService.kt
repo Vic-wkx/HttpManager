@@ -9,13 +9,12 @@ import retrofit2.http.Url
 
 /**
  * Description:
- * Rxtrofit断点续传下载Service类
+ * Rxtrofit 断点续传下载 Service 类
  *
  * @author  WZG
- * Company: Mobile CPX
  * Date:    2019-04-26
  */
-interface HttpDownService {
+interface DownloadService {
 
     /*大文件需要加入这个判断，防止下载过程中写入到内存中*/
     @Streaming

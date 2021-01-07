@@ -8,7 +8,6 @@ import io.reactivex.disposables.Disposable
  * 多接口合并请求监听器
  *
  * @author  Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019-04-25
  */
 abstract class HttpListListener {

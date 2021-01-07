@@ -8,7 +8,6 @@ import okhttp3.Response
  * 有网时的缓存处理
  *
  * @author  Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019-04-24
  */
 class NetCacheInterceptor(private val onlineCacheTime: Int = 30) : Interceptor {
@@ -17,8 +16,8 @@ class NetCacheInterceptor(private val onlineCacheTime: Int = 30) : Interceptor {
         val request = chain.request()
         val response = chain.proceed(request)
         return response.newBuilder()
-                .header("Cache-Control", "public, max-age=$onlineCacheTime")
-                .removeHeader("Pragma")
-                .build()
+            .header("Cache-Control", "public, max-age=$onlineCacheTime")
+            .removeHeader("Pragma")
+            .build()
     }
 }

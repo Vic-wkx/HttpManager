@@ -1,7 +1,7 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 [![jitpack](https://jitpack.io/v/wkxjc/HttpManager.svg)](https://jitpack.io/#wkxjc/HttpManager)
 
-# HttpManager English Doc | [中文文档](https://github.com/wkxjc/HttpManager/blob/master/README_CN.MD)
+# HttpManager [中文文档](https://github.com/wkxjc/HttpManager/blob/master/README_CN.MD) | English Doc
 
 ## Description
 
@@ -15,10 +15,10 @@ This is a library that encapsulates Http network requests, HTTP multi-interface 
 
 Step 1. Add it in your root *build.gradle* at the end of repositories:
 
-```
+```groovy
 allprojects {
 	repositories {
-		...
+		// ...
 		maven { url 'https://jitpack.io' }
 	}
 }
@@ -26,18 +26,18 @@ allprojects {
 
 Step 2. Add the dependency
 
-```
-implementation 'com.github.wkxjc:HttpManager:1.8'
+```groovy
+implementation 'com.github.wkxjc:HttpManager:2.0'
 ```
 
 ## How to use?
 
-1.Single network request：
+1.Single network request:
 
-```
+```kotlin
 private val httpManager by lazy { HttpManager(this) }
-...
-httpManager.request(randomWallpaperApi, object : HttpListener() {
+// ...
+httpManager.request(homeArticlesApi, object : HttpListener() {
 
     override fun onNext(result: String) {
         tvResult.text = result
@@ -49,13 +49,13 @@ httpManager.request(randomWallpaperApi, object : HttpListener() {
 })
 ```
 
-2.Multiple network requests：
+2.Multiple network requests:
 
-```
+```kotlin
 private val httpManager by lazy { HttpManager(this) }
-...
+// ...
 httpManager.request(
-    apis = arrayOf(randomWallpaperApi, categoryApi),
+    apis = arrayOf(homeArticlesApi, bannerApi),
     listener = object : HttpListListener() {
         
         /**
@@ -63,12 +63,12 @@ httpManager.request(
          */
         override fun onSingleNext(api: BaseApi, result: String): Any {
             when (api) {
-                randomWallpaperApi -> {
-                    Log.d("HttpListActivity", "Single api result callback: randomWallpaperApi:$result")
+                homeArticlesApi -> {
+                    Log.d("HttpListActivity", "Single api result callback: homeArticlesApi:$result")
                     // Here you can convert the returned string to any object, generally using Gson/fastJson to pause the object here.
                     return 123
                 }
-                categoryApi -> Log.d("HttpListActivity", "Single api result callback: categoryApi:$result")
+                bannerApi -> Log.d("HttpListActivity", "Single api result callback: bannerApi:$result")
             }
             return super.onSingleNext(api, result)
         }
@@ -79,8 +79,8 @@ httpManager.request(
         override fun onNext(resultMap: HashMap<BaseApi, Any>) {
             // use "as" method, convert the object saved in resultMap to the type returned by onSingleNext.
             tvResultList.text =
-                "randomWallpaperApi result: ${resultMap[randomWallpaperApi] as Int}\n" +
-                        "categoryApi result: ${resultMap[categoryApi].toString()}"
+                "homeArticlesApi result: ${resultMap[homeArticlesApi] as Int}\n" +
+                        "bannerApi result: ${resultMap[bannerApi].toString()}"
         }
         
         override fun onError(error: Throwable) {
@@ -90,11 +90,11 @@ httpManager.request(
 )
 ```
 
-3.Download network file：
+3.Download network file:
 
-```
-HttpDownManager.down(DownConfig().apply {
-    url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+```kotlin
+DownManager.download(DownloadApi().apply {
+    url = "https://media.w3.org/2010/05/sintel/trailer.mp4"
 })
 ```
 
@@ -102,56 +102,50 @@ HttpDownManager.down(DownConfig().apply {
 
 Before using HttpManager for a single api request or multiple api requests, you need some preparation.
 
-Step 1. Create a new ApiConfig, inherit from DefaultApiConfig, and override the baseUrl variable:
+Step 1. Create a new MyApiConfig, inherit from ApiConfig, and override the baseUrl variable:
 
-```
-class ApiConfig : DefaultApiConfig() {
+```kotlin
+class MyApiConfig : ApiConfig() {
     override var baseUrl = "Your network request BaseUrl"
 }
 ```
 
 Step 2. Initialize RxRetrofitApp in Application, set apiConfig:
 
-```
+```kotlin
 RxRetrofitApp.apply {
     application = this@MyApplication
-    apiConfig = ApiConfig()
+    apiConfig = MyApiConfig()
 }
 ```
 
 Step 3. Similar to using the Retrofit library, create a new ApiService, for example:
 
-```
-interface WallpaperApiService {
+```kotlin
+interface ApiService {
 
-    @GET("v1/vertical/vertical")
-    fun getRandomWallpaper(
-        @Query("limit") limit: Int = 30,
-        @Query("skip") skip: Int = 0,
-        @Query("adult") adult: Boolean = false,
-        @Query("first") first: Int = 0,
-        @Query("order") order: String = "hot"
-    ): Observable<String>
+    @GET("article/list/{page}/json")
+    fun getHomeArticles(@Path("page") page: Int): Observable<String>
 }
 ```
 
 Create a new Api, inherited from BaseApi, for example:
 
-```
-class RandomWallpaperApi : BaseApi() {
+```kotlin
+class HomeArticlesApi : BaseApi() {
 
     override fun getObservable(): Observable<String> {
-        val apiService = retrofit.create(WallpaperApiService::class.java)
-        return apiService.getRandomWallpaper()
+        val apiService = retrofit.create(ApiService::class.java)
+        return apiService.getHomeArticles(0)
     }
 }
 ```
 
 OK, now you can use httpManager to get the result of your api.
 
-Before using HttpDownManager, just make sure to initialize the RxRetrofitApp application in the Application.
+Before using DownManager, just make sure to initialize the RxRetrofitApp application in your Application.
 
-```
+```kotlin
 RxRetrofitApp.apply {
     application = this@MyApplication
 }
@@ -159,50 +153,50 @@ RxRetrofitApp.apply {
 
 ## ResultConverter
 
-In actual development, the data returned by the background interface is generally in a fixed format. For example, the fixed format in this Demo is as follows:
+In actual development, the data returned by the back-end interface is generally in a fixed format. For example, the fixed format in this Demo is as follows:
 
-```
-class BaseResult {
+```kotlin
+data class BaseResult(
     // code == 0 means request succeed
-    var code: Int = 0
+    val errorCode: Int,
     // This variable carries an error message when request failed
-    var msg: String = ""
+    val errorMsg: String,
     // This variable means the returned business data
-    var res: String = ""
-}
+    val data: String?
+)
 ```
 
 In this library, we can parse the returned data according to the fixed format first, and only deliver the returned business data to the business layer. Create a new ResultConverter:
 
-```
+```kotlin
 class ResultConverter : IResultConverter {
     override fun convert(response: String): String {
         // parse the result according to BaseResult here
         val result = JSONObject.parseObject(response, BaseResult::class.java)
         // handle errors through defined error codes
-        if (result.code != 0) throw Throwable("code != 0, msg = ${result.msg}")
-        return result.res
+        if (result.errorCode != 0) throw Throwable("errorCode != 0, errorMsg = ${result.errorMsg}")
+        return result.data ?: ""
     }
 }
 ```
 
-Then set it in the Application:
+Then set it in the MyApiConfig:
 
-```
-RxRetrofitApp.apply {
-    ...
-    resultConverter = ResultConverter()
+```kotlin
+class MyApiConfig : ApiConfig() {
+    // ...
+    override var resultConverter: IResultConverter = ResultConverter()
 }
 ```
 
-You can turned off it in the api via the "ignoreResultConverter" configuration.
+You can turned off it in the api via the "apiConfig.ignoreResultConverter" configuration.
 
 ## HttpResponseProcessor
 
 Sometimes, the background does not return an error message through the errorMessage of the BaseResult structure, but the error code of "404" or "403" requested by the Http request informs us that the request is failed.
 In this library, you can process the http response uniformly. Create a new HttpResponseProcessor:
 
-```
+```kotlin
 class HttpResponseProcessor : IHttpResponseProcessor {
     override fun handleResponse(response: Response): Response {
         // Here you can handle the http error code: response.code(), this error code is different from the errorCode in BaseResult.
@@ -212,31 +206,34 @@ class HttpResponseProcessor : IHttpResponseProcessor {
 }
 ```
 
-Then set it in the Application:
+Then set it in the MyApiConfig:
 
-```
-RxRetrofitApp.apply {
-    ...
-    httpResponseProcessor = HttpResponseProcessor()
+```kotlin
+class MyApiConfig : ApiConfig() {
+    // ...
+    override var httpResponseProcessor: IHttpResponseProcessor = HttpResponseProcessor()
 }
 ```
 
-You can turned off it in the api via the "ignoreResponseProcessor" configuration.
+You can turned off it in the api via the "apiConfig.ignoreResponseProcessor" configuration.
 
 ## Custom configuration
 
 ### 1.Globally modify the network request default configuration
       
-In ApiConfig, you can not only configure baseUrl, but also configure the following parameters. The following are the default values：
+In MyApiConfig, you can not only configure baseUrl, but also configure the following parameters. The following are the default values：
 
-```
-open class DefaultApiConfig {
+```kotlin
+open class ApiConfig {
     // BaseUrl requested by Retrofit Network
     open var baseUrl = ""
+
     // Whether to display the loading dialog
     open var showLoading = true
+
     // Whether the loading dialog can be cancelled
     open var loadingCancelable = true
+
     // Cache configuration
     open var cacheConfig = CacheConfig().apply {
         // Do you need cache
@@ -246,10 +243,13 @@ open class DefaultApiConfig {
         // Cache expiration time when the network is unavailable
         offlineCacheTime = 60 * 60 * 24 * 30
     }
+
     // Whether to ignore the BaseResult converter
     open var ignoreResultConverter: Boolean = false
+
     // Whether to ignore the ResponseProcessor
     open var ignoreResponseProcessor: Boolean = false
+
     // Retry configuration
     open var retry = RetryConfig().apply {
         // times of retry
@@ -259,14 +259,22 @@ open class DefaultApiConfig {
         // increase the delay time each time
         increaseDelay = 500L
     }
+
     // timeout configuration
     open var timeOutConfig = TimeoutConfig().apply {
         connectionTime = 10L
         readTime = 10L
         writeTime = 10L
     }
+
     // Http request header information
     open var headers: Headers? = null
+
+    // Result converter
+    open var resultConverter: IResultConverter = DefaultResultConverter()
+
+    // Http response processor
+    open var httpResponseProcessor: IHttpResponseProcessor = DefaultHttpResponseProcessor()
 }
 ```
 
@@ -276,37 +284,36 @@ The configuration here is valid for all network requests.
 
 The configurable parameters of single configuration is the same as the global configuration. For example:
 
-```
-class RandomWallpaperApi : BaseApi() {
+```kotlin
+class HomeArticlesApi : BaseApi() {
 
     init {
-        baseUrl = "baseUrl of this single api"
-        showLoading = true
-        loadingCancelable = true
-        cacheConfig = CacheConfig().apply {
+        apiConfig.baseUrl = "单独配置baseUrl"
+        apiConfig.showLoading = true
+        apiConfig.loadingCancelable = true
+        apiConfig.cacheConfig = CacheConfig().apply {
             cache = false
             onlineCacheTime = 30
             offlineCacheTime = 60 * 60 * 24 * 30
         }
-        ignoreResultConverter = false
-        ignoreResponseProcessor = false
-        retry = RetryConfig().apply {
+        apiConfig.ignoreResultConverter = false
+        apiConfig.ignoreResponseProcessor = false
+        apiConfig.retry = RetryConfig().apply {
             count = 5
             delay = 100L
             increaseDelay = 500L
         }
-        timeOutConfig = TimeoutConfig().apply {
+        apiConfig.timeOutConfig = TimeoutConfig().apply {
             connectionTime = 10L
             readTime = 10L
             writeTime = 10L
         }
-        // For example:
-        headers = Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
+        apiConfig.headers = Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
     }
     
     override fun getObservable(): Observable<String> {
-        val apiService = retrofit.create(WallpaperApiService::class.java)
-        return apiService.getRandomWallpaper()
+        val apiService = retrofit.create(ApiService::class.java)
+        return apiService.getHomeArticles(0)
     }
 }
 ```
@@ -316,74 +323,87 @@ class RandomWallpaperApi : BaseApi() {
 When you request an array of apis, the configuration of every single api is still valid. Only the two parameters, showLoading and loadingCancelable, are invalid.
 The configurable parameters of multi-interface request are as follows, the following are the default values:
 
-```
-open class DefaultHttpListConfig {
+```kotlin
+open class HttpListConfig {
     // Whether to display the loading dialog
     open var showLoading: Boolean = true
-    // Whether the loading dialog can be cancelled
+
+    //  Whether the loading dialog can be cancelled
     open var loadingCancelable: Boolean = true
+
     // Whether to request apis in order
-    open var order: Boolean = false
+    open var order: Boolean = true
 }
 ```
 
-If you need to modify the configuration of the Http multi-interface request globally, create a new HttpListConfig class, which inherits from DefaultHttpListConfig:
+If you need to modify the configuration of the Http multi-interface request globally, create a new HttpListConfig class, which inherits from HttpListConfig:
 
-```
-class HttpListConfig : DefaultHttpListConfig() {
-    override var showLoading = true
-    override var loadingCancelable = true
+```kotlin
+class MyHttpListApiConfig : HttpListConfig() {
+    override var showLoading = false
     override var order = false
 }
 ```
 
 Then set it in the Application:
 
-```
+```kotlin
 RxRetrofitApp.apply {
-    ...
-    httpListConfig = HttpListConfig()
+    // ...
+    httpListConfig = MyHttpListApiConfig()
 }
 ```
+
 ### 4.Separately configure multi-interface request 
 
 The configurable parameters of single configuration is the same as the global configuration. For example:
 
-```
+```kotlin
 httpManager.request(
-    apis = apis,
-    config = HttpListConfig(showLoading = true, loadingCancelable = true, order = false),
-    listener = listener
+    apis, listener,
+    HttpListConfig().apply {
+        showLoading = true
+        loadingCancelable = true
+        order = false
+    },
 )
 ```
 
-### 5.HttpDownManager global configuration
+### 5.DownManager global configuration
 
-When you use HttpDownManager downloading files, the global default configuration is as follows:
+When you use DownManager downloading files, the global default configuration is as follows:
 
-```
-open class DefaultDownConfig {
+```kotlin
+open class DownloadConfig {
+    companion object {
+        /**Update the progress after downloading progressStep bits. Use [PROGRESS_BY_PERCENT] to update by percentage*/
+        const val PROGRESS_BY_PERCENT = -1
+    }
+
     /**The saved folder path, if not set, the default path is "app cache path/download". If it's set to external path, you need to ensure that the app have read and write permissions*/
-    var saveDir: String = ""
+    open var saveDir: String = ""
         get() {
             if (field.isNotEmpty()) return field
-            val cacheDir = RxRetrofitApp.application.externalCacheDir.absolutePath
+            val cacheDir = RxRetrofitApp.application.externalCacheDir?.absolutePath
                 ?: throw Throwable("application is null")
             return "$cacheDir/download/"
         }
+
     /**Update the progress after downloading progressStep bits. Use [PROGRESS_BY_PERCENT] to update by percentage*/
-    var progressStep = 1024 * 4
+    open var progressStep = 1024 * 4
+
     /**Retry configuration*/
-    var retry = RetryConfig()
+    open var retry = RetryConfig()
+
     /**Http request header information*/
-    var headers: Headers? = null
+    open var headers: Headers? = null
 }
 ```
 
-If you need to modify the global configuration, create a new DownConfig class, inheriting from the DefaultDownConfig class:
+If you need to modify the global configuration, create a new MyDownConfig class, inheriting from the DownConfig class:
 
-```
-class DownConfig :DefaultDownConfig(){
+```kotlin
+class MyDownConfig : DownConfig(){
     override var saveDir: String = ""
         get() {
             if (field.isNotEmpty()) return field
@@ -399,26 +419,26 @@ class DownConfig :DefaultDownConfig(){
 
 Then set it in the Application:
 
-```
+```kotlin
 RxRetrofitApp.apply {
-    ...
-    downConfig = DownConfig()
+    // ...
+    downConfig = MyDownConfig()
 }
 ```
 
-### 6.Configure HttpDownManager separately
+### 6.Configure DownManager separately
 
 The configurable parameters of single configuration is the same as the global configuration. For example:
 
-```
-HttpDownManager.down(DownConfig().apply {
-    url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-    saveDir = "${RxRetrofitApp.application.externalCacheDir?.absolutePath}/download/"
+```kotlin
+DownManager.down(DownConfig().apply {
+    url = "download_link"
     /**The name of the saved file. If not set, the default name is the last path segment of the url.*/
-    saveFileName = "big_buck_bunny.mp4"
-    progressStep = 1024 * 128
-    retry = RetryConfig()
-    headers = Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
+    saveFileName = "file_name.mp4"
+    downloadConfig.saveDir = "${RxRetrofitApp.application.externalCacheDir?.absolutePath}/download/"
+    downloadConfig.progressStep = 1024 * 128
+    downloadConfig.retry = RetryConfig()
+    downloadConfig.headers = Headers.of(mapOf("name1" to "value1", "name2" to "value2"))
 })
 ```
 

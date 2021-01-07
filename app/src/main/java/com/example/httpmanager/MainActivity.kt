@@ -2,7 +2,7 @@ package com.example.httpmanager
 
 import android.content.Intent
 import android.os.Bundle
-import com.example.httpmanager.down.DownloadActivity
+import com.example.httpmanager.download.DownloadActivity
 import com.example.httpmanager.http.HttpActivity
 import com.example.httpmanager.httpList.HttpListActivity
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.activity_main.*
  * 主页面
  *
  * @author  Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019/4/3
  */
 class MainActivity : RxAppCompatActivity() {
@@ -26,13 +25,13 @@ class MainActivity : RxAppCompatActivity() {
 
     private fun initView() {
         btnHttp.setOnClickListener {
-            startActivity(Intent(this@MainActivity,HttpActivity::class.java))
+            startActivity(Intent(this@MainActivity, HttpActivity::class.java))
         }
         btnHttpList.setOnClickListener {
-            startActivity(Intent(this@MainActivity,HttpListActivity::class.java))
+            startActivity(Intent(this@MainActivity, HttpListActivity::class.java))
         }
         btnDownload.setOnClickListener {
-            startActivity(Intent(this@MainActivity,DownloadActivity::class.java))
+            startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
         }
     }
 }

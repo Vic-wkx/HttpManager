@@ -5,7 +5,6 @@ package com.base.library.rxRetrofit.common.utils
  * Url工具类
  *
  * @author  Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019-04-27
  */
 object UrlUtils {

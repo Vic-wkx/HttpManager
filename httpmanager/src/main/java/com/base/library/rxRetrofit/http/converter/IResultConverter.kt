@@ -5,7 +5,6 @@ package com.base.library.rxRetrofit.http.converter
  * Http返回数据统一转换
  *
  * @author  WZG
- * Company: Mobile CPX
  * Date:    2019-04-25
  */
 interface IResultConverter {

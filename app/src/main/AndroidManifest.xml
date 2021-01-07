@@ -21,7 +21,7 @@
         </activity>
         <activity android:name=".http.HttpActivity" />
         <activity android:name=".httpList.HttpListActivity" />
-        <activity android:name=".down.DownloadActivity" />
+        <activity android:name=".download.DownloadActivity" />
     </application>
 
 </manifest>

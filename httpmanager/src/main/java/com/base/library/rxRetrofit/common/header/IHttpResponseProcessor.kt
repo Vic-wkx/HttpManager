@@ -1,5 +1,6 @@
 package com.base.library.rxRetrofit.common.header
 
+import okhttp3.Request
 import okhttp3.Response
 
 /**
@@ -7,12 +8,11 @@ import okhttp3.Response
  * Http响应码统一处理
  *
  * @author  Alpinist Wang
- * Company: Mobile CPX
  * Date:    2019-05-04
  */
 interface IHttpResponseProcessor {
     /**
      * 处理Http响应码
      */
-    fun handleResponse(response: Response): Response
+    fun handleResponse(request: Request, response: Response): Response
 }
