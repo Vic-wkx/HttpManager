@@ -5,7 +5,7 @@
 
 ## 描述
 
-这是一个封装了 HTTP 网络请求、HTTP 多接口合并、网络文件下载的库。改编自[wzgiceman](https://github.com/wzgiceman)的[RxRetrofit库](https://github.com/wzgiceman/RxjavaRetrofitDemo-string-master)。
+这是一个封装了 HTTP 网络请求、HTTP 多接口合并、网络文件下载的库。改编自 [wzgiceman](https://github.com/wzgiceman) 的 [RxRetrofit库](https://github.com/wzgiceman/RxjavaRetrofitDemo-string-master) 。
 
 ## 屏幕截图
 
@@ -202,7 +202,7 @@ class MyApiConfig : ApiConfig() {
 ```kotlin
 class HttpResponseProcessor : IHttpResponseProcessor {
     override fun handleResponse(response: Response): Response {
-        // 在这里可以处理http返回的错误码：response.code()，这里的错误码不同于BaseResult中的errorCode
+        // 在这里可以处理http返回的错误码：response.code()，这里的错误码不同于 BaseResult 中的 errorCode
         if (response.code() >= 400) throw Throwable("Http response code = ${response.code()}")
         return response
     }

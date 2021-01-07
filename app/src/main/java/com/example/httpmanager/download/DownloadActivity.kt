@@ -25,6 +25,13 @@ class DownloadActivity : RxAppCompatActivity() {
     }
 
     private val listener = object : DownloadListener() {
+        override fun onSubscribe(d: Disposable) {
+            super.onSubscribe(d)
+            Log.d("~~~", "onSubscribe：开始下载或继续下载")
+            tvProgress.text = "开始下载或继续下载"
+            showPauseIcon()
+        }
+
         override fun onProgress(downloadProgress: DownloadProgress) {
             tvProgress.text = "下载中: ${downloadProgress.memoryProgress}"
             progressBar.progress = downloadProgress.progress
@@ -36,19 +43,6 @@ class DownloadActivity : RxAppCompatActivity() {
             // 有可能下完时没有达到更新进度要求progressStep，会导致进度条没有走到100%，所以手动设置到100%。
             progressBar.progress = 100
             showDownloadIcon()
-        }
-
-        override fun onError(e: Throwable) {
-            Log.d("~~~", "onError:$e")
-            tvProgress.text = "下载出错，点击下载按钮继续下载"
-            showDownloadIcon()
-        }
-
-        override fun onSubscribe(d: Disposable) {
-            super.onSubscribe(d)
-            Log.d("~~~", "onSubscribe：开始下载或继续下载")
-            tvProgress.text = "开始下载或继续下载"
-            showPauseIcon()
         }
 
         override fun onPause() {
@@ -63,6 +57,12 @@ class DownloadActivity : RxAppCompatActivity() {
             Log.d("~~~", "onDelete")
             tvProgress.text = "已删除"
             progressBar.progress = 0
+            showDownloadIcon()
+        }
+
+        override fun onError(e: Throwable) {
+            Log.d("~~~", "onError:$e")
+            tvProgress.text = "下载出错，点击下载按钮继续下载"
             showDownloadIcon()
         }
     }
