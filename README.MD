@@ -288,7 +288,7 @@ The configurable parameters of single configuration is the same as the global co
 class HomeArticlesApi : BaseApi() {
 
     init {
-        apiConfig.baseUrl = "单独配置baseUrl"
+        apiConfig.baseUrl = "config its own baseUrl if it's different from Default ApiConfig"
         apiConfig.showLoading = true
         apiConfig.loadingCancelable = true
         apiConfig.cacheConfig = CacheConfig().apply {
